@@ -26,6 +26,7 @@ var GiftProBase = table.InsGiftProBaseTable
 var TSkillpBase = table.InsTSkillpBaseTable
 var NameBase = table.InsNameBaseTable
 var TBirckBase = table.InsTBirckBaseTable
+var Question = table.InsQuestionTable
 var TBallGiftbase = table.InsTBallGiftbaseTable
 var NoticeBase = table.InsNoticeBaseTable
 var ShopBase = table.InsShopBaseTable

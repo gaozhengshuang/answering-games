@@ -37,6 +37,16 @@
         "Diamond":0
     },
 
+    "gametype":[
+        100,1000
+        ],
+    "gamewaittime":20,
+    "gamemaxmember":30,
+    "gameroundtime":9,
+    "gameroundcount":3,
+    "gamerobotnum":3,
+    "gamerewardper":10,
+
 
     "//":"发货API，运费，几个包邮",
     "Delivery" : {

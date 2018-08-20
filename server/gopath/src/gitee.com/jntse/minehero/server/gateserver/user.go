@@ -95,6 +95,8 @@ type GateUser struct {
 	asynev			eventque.AsynEventQueue	// 异步事件处理
 	broadcastbuffer []uint64	// 广播消息缓存
 	synbalance		bool		// 充值中
+	roomid			int64
+	gameflag		bool
 }
 
 func NewGateUser(account, key, token string) *GateUser {
@@ -110,6 +112,8 @@ func NewGateUser(account, key, token string) *GateUser {
 	u.savedone = false
 	u.token = token
 	u.broadcastbuffer = make([]uint64,0)
+	u.roomid = 0
+	u.gameflag = false
 	return u
 }
 
