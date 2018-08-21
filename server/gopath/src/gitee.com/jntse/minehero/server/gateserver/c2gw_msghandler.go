@@ -425,7 +425,7 @@ func on_C2GW_SellBagItem(session network.IBaseNetSession, message interface{}) {
 
 // 玩家充值完成(大厅和房间都自己获取金币返回)
 func on_C2GW_PlatformRechargeDone(session network.IBaseNetSession, message interface{}) {
-	tmsg := message.(*msg.C2GW_PlatformRechargeDone)
+	//tmsg := message.(*msg.C2GW_PlatformRechargeDone)
 	user := ExtractSessionUser(session)
 	if user == nil {
 		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
@@ -434,13 +434,13 @@ func on_C2GW_PlatformRechargeDone(session network.IBaseNetSession, message inter
 	}
 
 	// 游戏中
-	if user.IsInRoom() {
-		user.SendRoomMsg(tmsg)
-		return
-	}
+	//if user.IsInRoom() {
+	//	user.SendRoomMsg(tmsg)
+	//	return
+	//}
 
-	log.Error("玩家[%s %d]收到充值完成通知但玩家不在房间中", user.Name(), user.Id())
-	//user.SynMidasBalance()
+	//log.Error("玩家[%s %d]收到充值完成通知但玩家不在房间中", user.Name(), user.Id())
+	user.SynMidasBalance()
 }
 
 // 绑定微信openid
@@ -507,7 +507,7 @@ func on_C2GW_SendWechatAuthCode(session network.IBaseNetSession, message interfa
 		user.SendMsg(send)
 
 		// 转账给新用户
-		def.HttpWechatCompanyPay(respok.Openid, 1, "绑定微信奖励")
+		//def.HttpWechatCompanyPay(respok.Openid, 1, "绑定微信奖励")
 
 		// 完成任务
 		log.Info("玩家[%d] 绑定wechat openid[%s]", user.Id(), respok.Openid)
