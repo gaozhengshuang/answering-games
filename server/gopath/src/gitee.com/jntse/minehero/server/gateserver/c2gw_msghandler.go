@@ -433,7 +433,7 @@ func on_C2GW_PlatformRechargeDone(session network.IBaseNetSession, message inter
 		return
 	}
 
-	// 游戏中
+	//游戏中
 	//if user.IsInRoom() {
 	//	user.SendRoomMsg(tmsg)
 	//	return

@@ -73,20 +73,20 @@ func (this *UserTask) PackBin(bin *msg.Serialize) {
 }
 
 func (this *UserTask) TaskFinish(id int32) {
-	task, find := this.tasks[id]
-	if find == false {
-		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(0), Completed: pb.Int32(1)}
-		this.tasks[id] = task
-	} else {
-		if task.GetCompleted() == 1 {
-			log.Info("玩家[%s %d] 重复完成任务[%d]", this.owner.Name(), this.owner.Id(), id)
-			return
-		}
-		task.Completed = pb.Int32(1)
-	}
+	//task, find := this.tasks[id]
+	//if find == false {
+	//	task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(0), Completed: pb.Int32(1)}
+	//	this.tasks[id] = task
+	//} else {
+	//	if task.GetCompleted() == 1 {
+	//		log.Info("玩家[%s %d] 重复完成任务[%d]", this.owner.Name(), this.owner.Id(), id)
+	//		return
+	//	}
+	//	task.Completed = pb.Int32(1)
+	//}
 
-	this.GiveTaskReward(id)
-	log.Info("玩家[%s %d] 完成任务[%d]", this.owner.Name(), this.owner.Id(), id)
+	//this.GiveTaskReward(id)
+	//log.Info("玩家[%s %d] 完成任务[%d]", this.owner.Name(), this.owner.Id(), id)
 }
 
 func (this *UserTask) GetTaskProgress(id int32) int32 {
@@ -192,3 +192,12 @@ func (this *UserTask) GiveTaskReward(id int32) {
 	//	def.HttpWechatCompanyPay(this.owner.OpenId(), count, taskbase.Desc)
 	//}
 }
+
+func (this *UserTask) FillCompleteTask (datas *[]*msg.TaskData) {
+	for _, task := range this.tasks {
+		if task.GetCompleted() == 1 && task.GetGetreward() == 0 {
+			*datas = append(*datas, task)
+		}
+	}
+}
+

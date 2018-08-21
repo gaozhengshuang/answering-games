@@ -319,18 +319,20 @@ func (this *GameRoomAgent) GiveReward(){
         return
     }
     reward := this.sumreward / int32(len(this.members))
-    send := &msg.GW2C_GameOver{Reward : pb.Int32(reward)}
     for k, _ := range this.members{
         if k <= 100{
             continue
         }
         user := UserMgr().FindById(uint64(k))
+		send := &msg.GW2C_GameOver{Reward : pb.Int32(reward)}
         if user != nil {
             user.roomid = 0
 			user.task.AddTaskProgress(Task_Win, 1)
+			user.AddYuanbao(uint32(reward), "比赛获胜", true)
 			if reward > this.cost {
 				user.task.AddTaskProgress(Task_GetCoin, reward - this.cost)
 			}
+			user.task.FillCompleteTask(&send.Tasks)
         }
         this.SendMsgById(send, k)
         log.Info("房间[%d] 发放金币奖励[%d]给玩家[%d], ", this.Id(), reward, k)
