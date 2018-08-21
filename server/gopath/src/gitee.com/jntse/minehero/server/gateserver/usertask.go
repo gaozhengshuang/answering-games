@@ -3,21 +3,54 @@ package main
 import (
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/minehero/pbmsg"
-	"gitee.com/jntse/minehero/server/def"
+	_"gitee.com/jntse/minehero/server/def"
 	"gitee.com/jntse/minehero/server/tbl"
+	"gitee.com/jntse/gotoolkit/util"
 	pb "github.com/gogo/protobuf/proto"
 	"strconv"
 	"strings"
 )
 
+const (
+	Task_Share		int32 = 1000
+	Task_Win		int32 = 2000
+	Task_Join		int32 = 3000
+	Task_GetCoin	int32 = 4000
+	Task_Kill		int32 = 5000
+)
+
 type UserTask struct {
 	tasks map[int32]*msg.TaskData
 	owner *GateUser
+	curtask map[int32]int32
+	tasktime int32
 }
 
 func (this *UserTask) Init(owner *GateUser) {
 	this.owner = owner
 	this.tasks = make(map[int32]*msg.TaskData)
+	this.curtask = make(map[int32]int32)
+}
+
+func (this *UserTask) InitTask(){
+	if !util.IsSameDay(int64(this.tasktime), util.CURTIME()){
+		this.tasks = make(map[int32]*msg.TaskData)
+		this.curtask = make(map[int32]int32)
+		for key, value := range tbl.TaskBase.TTaskById{
+			_, ok := this.curtask[value.MainTask]
+			if ok {
+				continue
+			}
+			task := &msg.TaskData{Id: pb.Int32(key), Progress: pb.Int32(0), Completed: pb.Int32(0)}
+			this.tasks[key] = task
+			this.curtask[value.MainTask] = key
+		}
+		this.tasktime = int32(util.CURTIME())
+	}
+}
+
+func (this *UserTask) Timer(){
+	this.InitTask()
 }
 
 func (this *UserTask) LoadBin(bin *msg.Serialize) {
@@ -27,6 +60,7 @@ func (this *UserTask) LoadBin(bin *msg.Serialize) {
 	}
 	for _, data := range taskbin.GetTasks() {
 		this.tasks[data.GetId()] = data
+		this.curtask[data.GetId() / 1000 * 1000] = data.GetId() % 1000
 	}
 }
 
@@ -64,13 +98,42 @@ func (this *UserTask) GetTaskProgress(id int32) int32 {
 }
 
 func (this *UserTask) SetTaskProgress(id, progress int32) {
-	task, find := this.tasks[id]
+	taskid, ok := this.curtask[id]
+	if ok == false {
+		taskid = id
+	}
+	task, find := this.tasks[taskid]
 	if find == false {
 		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0)}
 		this.tasks[id] = task
 		return
 	}
 	task.Progress = pb.Int32(progress)
+}
+
+func (this *UserTask) AddTaskProgress(id, progress int32) {
+	taskid, ok := this.curtask[id]
+	if ok == false {
+		return
+	}
+	task, find := this.tasks[taskid]
+	if find == false {
+		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0)}
+		this.tasks[id] = task
+		return
+	}
+	taskbase, find := tbl.TaskBase.TTaskById[taskid]
+	if find == false {
+		log.Error("玩家[%s %d] 找不到任务配置[%d]", this.owner.Name(), this.owner.Id(), id)
+		return
+	}
+	if task.GetProgress() < taskbase.Count {
+		task.Progress = pb.Int32(task.GetProgress() + progress)
+		if task.GetProgress() >= taskbase.Count{
+			task.Progress = pb.Int32(taskbase.Count)
+			task.Completed = pb.Int32(1)
+		}
+	}
 }
 
 func (this *UserTask) SendTaskList() {
@@ -90,7 +153,11 @@ func (this *UserTask) IsTaskFinish(id int32) bool {
 }
 
 func (this *UserTask) GiveTaskReward(id int32) {
-	taskbase, find := tbl.TaskBase.TTaskById[uint32(id)]
+	if !this.IsTaskFinish(id) {
+		return
+	}
+
+	taskbase, find := tbl.TaskBase.TTaskById[id]
 	if find == false {
 		log.Error("玩家[%s %d] 找不到任务配置[%d]", this.owner.Name(), this.owner.Id(), id)
 		return
@@ -102,11 +169,13 @@ func (this *UserTask) GiveTaskReward(id int32) {
 		log.Error("玩家[%s %d] 解析任务奖励失败[%d]", this.owner.Name(), this.owner.Id(), id)
 		return
 	}
-	//reward, _ := strconv.ParseInt(rewardpair[0], 10, 32)
+	reward, _ := strconv.ParseInt(rewardpair[0], 10, 32)
 	count, _ := strconv.ParseInt(rewardpair[1], 10, 32)
+	
+	this.owner.AddItem(uint32(reward), uint32(count), "每日任务奖励", true)
 
 	//
-	if id == int32(msg.TaskId_RegistAccount) || id == int32(msg.TaskId_RegisterTopScore) || id == int32(msg.TaskId_InviteeTopScore) {
-		def.HttpWechatCompanyPay(this.owner.OpenId(), count, taskbase.Desc)
-	}
+	//if id == int32(msg.TaskId_RegistAccount) || id == int32(msg.TaskId_RegisterTopScore) || id == int32(msg.TaskId_InviteeTopScore) {
+	//	def.HttpWechatCompanyPay(this.owner.OpenId(), count, taskbase.Desc)
+	//}
 }

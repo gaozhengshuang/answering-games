@@ -133,6 +133,7 @@
 		{ "Id": 129, "Name": "msg.GW2C_LuckyDrawHit" },
 		{ "Id": 130, "Name": "msg.GW2C_FreePresentNotify" },
 		{ "Id": 131, "Name": "msg.GW2C_SendTaskList" },
-		{ "Id": 132, "Name": "msg.GW2C_SendLuckyDrawRecord" },
-		{ "Id": 133, "Name": "msg.C2GW_ReqTaskList" }
+		{ "Id": 132, "Name": "msg.C2GW_GetTaskReward" },
+		{ "Id": 133, "Name": "msg.GW2C_SendLuckyDrawRecord" },
+		{ "Id": 134, "Name": "msg.C2GW_ReqTaskList" }
 	]}

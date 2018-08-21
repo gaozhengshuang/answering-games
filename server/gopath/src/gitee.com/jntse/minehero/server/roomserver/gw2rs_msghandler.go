@@ -263,7 +263,7 @@ func on_BT_BulletEarnMoney(session network.IBaseNetSession, message interface{})
 
 	// 检查任务
 	taskid := int32(msg.TaskId_RegisterTopScore)
-	task, find := tbl.TaskBase.TTaskById[uint32(taskid)]
+	task, find := tbl.TaskBase.TTaskById[int32(taskid)]
 	if user.task.IsTaskFinish(taskid) == false && find && user.GetGold() >= uint32(task.Count) {
 		user.task.TaskFinish(taskid) 
 		inviter := user.Inviter()

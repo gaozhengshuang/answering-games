@@ -19,16 +19,22 @@ message TTaskDefine
 {	
 	
 	
-	optional uint32 Id = 1; // id
+	optional int32 Id = 1; // id
 	
 	
-	optional string Desc = 2; // 描述
+	optional int32 MainTask = 2; // 主任务
 	
 	
-	optional int32 Count = 3; // 计数
+	optional int32 SubTask = 3; // 子任务
 	
 	
-	optional string Reward = 4; // 奖励
+	optional int32 Count = 4; // 计数
+	
+	
+	optional string Desc = 5; // 描述
+	
+	
+	optional string Reward = 6; // 奖励
 
 }
 

@@ -63,6 +63,11 @@ message GW2C_SendTaskList {
     repeated msg.TaskData tasks = 1;
 }
 
+// 领取任务列表
+message C2GW_GetTaskReward {
+    optional int32 taskid = 1;
+}
+
 // 抽奖历史记录
 message GW2C_SendLuckyDrawRecord {
     optional LuckyDrawRecord luckydraw = 1;

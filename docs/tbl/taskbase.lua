@@ -3,10 +3,26 @@
 
 module table {
 export var TTask : table.ITTaskDefine[] = [
-		{ Id : 1001, Desc : "注册账户", Count : 1, Reward : "6002-100" 	},
-		{ Id : 1002, Desc : "达到目标分数", Count : 10000, Reward : "6002-100" 	},
-		{ Id : 1003, Desc : "被邀请人达到目标分数", Count : 10000, Reward : "6002-100" 	},
-		{ Id : 1004, Desc : "邀请其他玩家注册游戏", Count : 99999, Reward : "6002-100" 	}
+		{ Id : 1001, MainTask : 1000, SubTask : 1, Count : 1, Desc : "分享1次", Reward : "6001-1000" 	},
+		{ Id : 1002, MainTask : 1000, SubTask : 2, Count : 3, Desc : "分享3次", Reward : "6001-2000" 	},
+		{ Id : 1003, MainTask : 1000, SubTask : 3, Count : 5, Desc : "分享5次", Reward : "6001-3000" 	},
+		{ Id : 1004, MainTask : 1000, SubTask : 4, Count : 7, Desc : "分享7次", Reward : "6001-4000" 	},
+		{ Id : 2001, MainTask : 2000, SubTask : 1, Count : 1, Desc : "吃鸡1次", Reward : "6001-1000" 	},
+		{ Id : 2002, MainTask : 2000, SubTask : 2, Count : 2, Desc : "吃鸡2次", Reward : "6001-2000" 	},
+		{ Id : 2003, MainTask : 2000, SubTask : 3, Count : 3, Desc : "吃鸡3次", Reward : "6001-3000" 	},
+		{ Id : 2004, MainTask : 2000, SubTask : 4, Count : 5, Desc : "吃鸡5次", Reward : "6001-4000" 	},
+		{ Id : 3001, MainTask : 3000, SubTask : 1, Count : 3, Desc : "参加3局比赛", Reward : "6001-1000" 	},
+		{ Id : 3002, MainTask : 3000, SubTask : 2, Count : 5, Desc : "参加5局比赛", Reward : "6001-2000" 	},
+		{ Id : 3003, MainTask : 3000, SubTask : 3, Count : 7, Desc : "参加7局比赛", Reward : "6001-3000" 	},
+		{ Id : 3004, MainTask : 3000, SubTask : 4, Count : 10, Desc : "参加10局比赛", Reward : "6001-4000" 	},
+		{ Id : 4001, MainTask : 4000, SubTask : 1, Count : 1000, Desc : "获得1000金币", Reward : "6001-1000" 	},
+		{ Id : 4002, MainTask : 4000, SubTask : 2, Count : 2000, Desc : "获得2000金币", Reward : "6001-2000" 	},
+		{ Id : 4003, MainTask : 4000, SubTask : 3, Count : 5000, Desc : "获得5000金币", Reward : "6001-3000" 	},
+		{ Id : 4004, MainTask : 4000, SubTask : 4, Count : 10000, Desc : "获得10000金币", Reward : "6001-4000" 	},
+		{ Id : 5001, MainTask : 5000, SubTask : 1, Count : 10, Desc : "淘汰10名玩家", Reward : "6001-1000" 	},
+		{ Id : 5002, MainTask : 5000, SubTask : 2, Count : 50, Desc : "淘汰50名玩家", Reward : "6001-2000" 	},
+		{ Id : 5003, MainTask : 5000, SubTask : 3, Count : 100, Desc : "淘汰100名玩家", Reward : "6001-3000" 	},
+		{ Id : 5004, MainTask : 5000, SubTask : 4, Count : 200, Desc : "淘汰200名玩家", Reward : "6001-4000" 	}
 	]
 
 

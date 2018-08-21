@@ -125,14 +125,18 @@ func Authenticate(session network.IBaseNetSession, account string, passwd string
 
 	// 校验账户密码
 	key := fmt.Sprintf("accounts_passwd_%s", account)
-	svrpasswd, err := Redis().Get(key).Result()
+	_, err := Redis().Get(key).Result()
 	if err == redis.Nil {
-		return "账户未注册"
+		log.Info("注册新账户[%s]", account)     // 不存在的账户
+		if errcode := RegistAccount(account, "", "", account, "", account); errcode != "" {
+			return fmt.Sprintf("注册账户失败 账户[%s] 错误[%s]", account, errcode)
+		}
+		//return "账户未注册"
 	}
 
-	if svrpasswd != passwd {
-		return "密码错误"
-	}
+	//if svrpasswd != passwd {
+	//	return "密码错误"
+	//}
 
 	return ""
 }

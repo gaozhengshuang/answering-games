@@ -302,9 +302,16 @@ func (this *GameRoomAgent) CalcAnswer(){
         send.Delids = append(send.Delids, v)
     }
     this.SendToAllMsg(send)
+	delnum := len(delids)
     for _, v := range delids {
         this.DelMember(v)
     }
+	for k, _ := range this.members {
+		user := UserMgr().FindById(uint64(k))
+		if user != nil {
+			user.task.AddTaskProgress(Task_Kill, int32(delnum))
+		}
+	}
 }
 
 func (this *GameRoomAgent) GiveReward(){
@@ -312,7 +319,6 @@ func (this *GameRoomAgent) GiveReward(){
         return
     }
     reward := this.sumreward / int32(len(this.members))
-    //reward = reward * (100 - int32(tbl.Global.Gamerewardper)) / 100
     send := &msg.GW2C_GameOver{Reward : pb.Int32(reward)}
     for k, _ := range this.members{
         if k <= 100{
@@ -321,9 +327,10 @@ func (this *GameRoomAgent) GiveReward(){
         user := UserMgr().FindById(uint64(k))
         if user != nil {
             user.roomid = 0
-            //event := NewAddPlatformCoinsEvent(int32(reward), "红包答题增加金币", user.AddPlatformCoins)
-            //user.AsynEventInsert(event)
-            //user.QueryPlatformCoins()
+			user.task.AddTaskProgress(Task_Win, 1)
+			if reward > this.cost {
+				user.task.AddTaskProgress(Task_GetCoin, reward - this.cost)
+			}
         }
         this.SendMsgById(send, k)
         log.Info("房间[%d] 发放金币奖励[%d]给玩家[%d], ", this.Id(), reward, k)
@@ -437,6 +444,7 @@ func (this *GameRoomSvrManager) JoinGameOk(user *GateUser, gtype int32) {
         return
     }
     user.roomid = room.Id()
+	user.task.AddTaskProgress(Task_Join, 1)
     member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(user.Id())), Name : pb.String(user.Name()), Answer : pb.Int32(util.RandBetween(1,2))}
     room.AddMember(member, int32(tbl.Global.Gametype[gtype]))
 }

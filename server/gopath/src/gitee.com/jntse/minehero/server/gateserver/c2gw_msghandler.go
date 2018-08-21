@@ -72,6 +72,10 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistProtoMsg(msg.C2GW_ChangeImageSex{}, on_C2GW_ChangeImageSex)
 	this.msgparser.RegistProtoMsg(msg.C2GW_ReqTaskList{}, on_C2GW_ReqTaskList)
 
+	this.msgparser.RegistProtoMsg(msg.C2GW_JoinGame{}, on_C2GW_JoinGame)
+	this.msgparser.RegistProtoMsg(msg.C2GW_Answer{}, on_C2GW_Answer)
+	this.msgparser.RegistProtoMsg(msg.C2GW_GetTaskReward{}, on_C2GW_GetTaskReward)
+
 	// 收战场消息
 	this.msgparser.RegistProtoMsg(msg.BT_ReqEnterRoom{}, on_BT_ReqEnterRoom)
 	this.msgparser.RegistProtoMsg(msg.BT_ReqQuitGameRoom{}, on_BT_ReqQuitGameRoom)
@@ -112,6 +116,14 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.GW2C_UpdateItemPos{})
 	this.msgparser.RegistSendProto(msg.GW2C_RetChangeImageSex{})
 
+	this.msgparser.RegistSendProto(msg.GW2C_UpdateRoomInfo{})
+	this.msgparser.RegistSendProto(msg.GW2C_StartGame{})
+	this.msgparser.RegistSendProto(msg.GW2C_QuestionInfo{})
+	this.msgparser.RegistSendProto(msg.GW2C_AnswerInfo{})
+	this.msgparser.RegistSendProto(msg.GW2C_GameOver{})
+	this.msgparser.RegistSendProto(msg.GW2C_JoinOk{})
+	this.msgparser.RegistSendProto(msg.GW2C_AnswerOk{})
+
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})
 	//this.msgparser.RegistSendProto(msg.BT_SendBattleUser{})
@@ -126,7 +138,7 @@ func (this *C2GWMsgHandler) Init() {
 
 // 客户端心跳
 func on_C2GW_HeartBeat(session network.IBaseNetSession, message interface{}) {
-	//tmsg := message.(*msg.C2GW_HeartBeat)
+	tmsg := message.(*msg.C2GW_HeartBeat)
 	//log.Info(reflect.TypeOf(tmsg).String())
 
 	//account, ok := session.UserDefData().(string)
@@ -151,11 +163,11 @@ func on_C2GW_HeartBeat(session network.IBaseNetSession, message interface{}) {
 
 	//curtime := util.CURTIMEUS()
 	//log.Info("receive heart beat msg interval=%d", curtime - tmsg.GetTime())
-	//session.SendCmd(&msg.GW2C_HeartBeat{
-	//	Uid: tmsg.Uid,
-	//	Time: pb.Int64(util.CURTIMEUS()),
-	//	Test: tmsg.Test,
-	//})
+	session.SendCmd(&msg.GW2C_HeartBeat{
+		Uid: tmsg.Uid,
+		Time: pb.Int64(util.CURTIMEUS()),
+		Test: tmsg.Test,
+	})
 }
 
 func on_C2GW_ReqStartGame(session network.IBaseNetSession, message interface{}) {
@@ -756,3 +768,39 @@ func on_C2GW_ReqTaskList(session network.IBaseNetSession, message interface{}) {
 	}
 	user.task.SendTaskList()
 }
+
+func on_C2GW_JoinGame(session network.IBaseNetSession, message interface{}) {
+	tmsg := message.(*msg.C2GW_JoinGame)
+	user := ExtractSessionUser(session)
+	if user == nil {
+		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+		session.Close()
+		return
+	}
+	user.SetToken(tmsg.GetToken())
+	GameRoomSvrMgr().JoinGame(user, tmsg.GetType())
+}
+
+func on_C2GW_Answer(session network.IBaseNetSession, message interface{}) {
+	tmsg := message.(*msg.C2GW_Answer)
+	user := ExtractSessionUser(session)
+	if user == nil {
+		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+		session.Close()
+		return
+	}
+	user.SetToken(tmsg.GetToken())
+	GameRoomSvrMgr().AnswerQuestion(user, tmsg.GetAnswer())
+}
+
+func on_C2GW_GetTaskReward(session network.IBaseNetSession, message interface{}) {
+	tmsg := message.(*msg.C2GW_GetTaskReward)
+	user := ExtractSessionUser(session)
+	if user == nil {
+		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+		session.Close()
+		return
+	}
+	user.task.GiveTaskReward(tmsg.GetTaskid())
+}
+
