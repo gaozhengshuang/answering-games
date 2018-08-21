@@ -72,3 +72,7 @@ enum MoneyType {
     _Diamond = 2;
 }
 
+//排行榜定义
+enum SortType {
+    WinScore = 0;       //赚钱榜
+}

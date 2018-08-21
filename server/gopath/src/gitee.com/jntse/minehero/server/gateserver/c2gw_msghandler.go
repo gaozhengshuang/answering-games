@@ -75,6 +75,7 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistProtoMsg(msg.C2GW_JoinGame{}, on_C2GW_JoinGame)
 	this.msgparser.RegistProtoMsg(msg.C2GW_Answer{}, on_C2GW_Answer)
 	this.msgparser.RegistProtoMsg(msg.C2GW_GetTaskReward{}, on_C2GW_GetTaskReward)
+	this.msgparser.RegistProtoMsg(msg.C2GW_ReqSort{}, on_C2GW_ReqSort)
 
 	// 收战场消息
 	this.msgparser.RegistProtoMsg(msg.BT_ReqEnterRoom{}, on_BT_ReqEnterRoom)
@@ -802,5 +803,16 @@ func on_C2GW_GetTaskReward(session network.IBaseNetSession, message interface{})
 		return
 	}
 	user.task.GiveTaskReward(tmsg.GetTaskid())
+}
+
+func on_C2GW_ReqSort(session network.IBaseNetSession, message interface{}) {
+	tmsg := message.(*msg.C2GW_ReqSort)
+	user := ExtractSessionUser(session)
+	if user == nil {
+		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+		session.Close()
+		return
+	}
+	user.SendSortInfo(tmsg.GetType(), tmsg.GetStart(), tmsg.GetEnd())
 }
 

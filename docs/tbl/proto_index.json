@@ -135,5 +135,8 @@
 		{ "Id": 131, "Name": "msg.GW2C_SendTaskList" },
 		{ "Id": 132, "Name": "msg.C2GW_GetTaskReward" },
 		{ "Id": 133, "Name": "msg.GW2C_SendLuckyDrawRecord" },
-		{ "Id": 134, "Name": "msg.C2GW_ReqTaskList" }
+		{ "Id": 134, "Name": "msg.C2GW_ReqTaskList" },
+		{ "Id": 135, "Name": "msg.SortInfo" },
+		{ "Id": 136, "Name": "msg.C2GW_ReqSort" },
+		{ "Id": 137, "Name": "msg.GW2C_RetSort" }
 	]}

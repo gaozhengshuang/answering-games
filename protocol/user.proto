@@ -63,7 +63,7 @@ message GW2C_SendTaskList {
     repeated msg.TaskData tasks = 1;
 }
 
-// 领取任务列表
+// 领取奖励
 message C2GW_GetTaskReward {
     optional int32 taskid = 1;
 }
@@ -77,3 +77,26 @@ message GW2C_SendLuckyDrawRecord {
 message C2GW_ReqTaskList {
 	
 }
+
+// 排行榜数据
+message SortInfo {
+    optional int64  uid     = 1;    //userid
+    optional string name    = 2;    //玩家名字
+    optional string face    = 3;    //玩家头像
+    optional int32  score   = 4;    //玩家比分
+}
+
+
+// 请求排行榜
+message C2GW_ReqSort {
+    optional int32 type     = 1;    //类型 见define.proto sorttype枚举
+    optional int32 start    = 2;    //起始
+    optional int32 end      = 3;    //结束
+}
+
+// 返回排行榜
+message GW2C_RetSort {
+    optional int32 type     = 1;
+    repeated SortInfo list  = 2;     //信息列表
+}
+

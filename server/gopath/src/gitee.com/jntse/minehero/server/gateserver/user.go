@@ -866,3 +866,37 @@ func (this* GateUser) DoAddMidasMoneyResult(balance int64, errmsg string, amount
 	}
 }
 
+func (this* GateUser) UpdateSortScore(sorttype int32, score int32) {
+	key := fmt.Sprintf("gamesort_%d", sorttype)
+	err := Redis().ZAdd(key, redis.Z{Score:float64(score), Member:string(strconv.Itoa(int(this.Id())))}).Err()
+	if nil != err {
+		log.Error("用户%d 更新比分失败", this.Id())
+	}
+}
+
+func (this* GateUser) SendSortInfo(sorttype int32, begin int32, end int32) {
+	if end < begin || end - begin > 20{
+		return
+	}
+
+	key := fmt.Sprintf("gamesort_%d", sorttype)
+	vals, err:= Redis().ZRevRangeWithScores(key, int64(begin), int64(end)).Result()
+	if nil != err {
+		log.Error("获取排行榜%d数据失败", sorttype)
+		return
+	}
+
+	send := &msg.GW2C_RetSort{}
+	send.Type = pb.Int32(sorttype)
+	for _, v := range vals {
+		struserid := v.Member.(string)
+		userid ,_ := strconv.ParseInt(struserid, 10, 32)
+		keyname := fmt.Sprintf("charbase_%d_name", userid)
+		name := Redis().Get(keyname).Val();
+		keyface := fmt.Sprintf("charbase_%d_face", userid)
+		face := Redis().Get(keyface).Val();
+		send.List = append(send.List, &msg.SortInfo{Uid: pb.Int64(int64(userid)), Name:pb.String(name), Face:pb.String(face), Score:pb.Int32(int32(v.Score))})
+	}
+	this.SendMsg(send)
+}
+
