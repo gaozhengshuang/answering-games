@@ -70,6 +70,7 @@ type DBUserData struct {
 	luckydraw	  	[]*msg.LuckyDrawItem
 	luckydrawtotal 	int64
 	totalrecharge	uint32		// 总充值
+	registcash		int32		
 }
 
 // --------------------------------------------------------------------------
@@ -421,6 +422,7 @@ func (this *GateUser) PackBin() *msg.Serialize {
 	userbase.Addrlist = this.addrlist[:]
 	userbase.GetScounter().Freestep = pb.Int32(this.freestep)
 	userbase.GetScounter().Givestep = pb.Int64(this.givestep)
+	userbase.GetScounter().Registcash = pb.Int32(this.registcash)
 	userbase.Wechat.Openid = pb.String(this.wechatopenid)
 	userbase.GetFreepresent().Count = pb.Int32(this.presentcount)
 	userbase.GetFreepresent().Tmrecord = pb.Int64(this.presentrecord)
@@ -464,6 +466,7 @@ func (this *GateUser) LoadBin() {
 	this.addrlist = userbase.GetAddrlist()[:]
 	this.freestep = userbase.GetScounter().GetFreestep()
 	this.givestep = userbase.GetScounter().GetGivestep()
+	this.registcash = userbase.GetScounter().GetRegistcash()
 	this.wechatopenid = userbase.GetWechat().GetOpenid()
 	this.presentcount = userbase.GetFreepresent().GetCount()
 	this.presentrecord = userbase.GetFreepresent().GetTmrecord()
@@ -827,8 +830,9 @@ func (this *GateUser) DoSynMidasBalanceResult(balance, amt_save int64, errmsg st
 	if uint32(amt_save) > this.TotalRecharge()  {
 		recharge := uint32(amt_save) - this.TotalRecharge()
 		this.SetTotalRecharge(uint32(amt_save))
-		this.AddDiamond(recharge, "充值获得", true)
-		this.SetDiamondCost(this.GetDiamondCost() + int64(recharge))
+		this.AddYuanbao(recharge, "充值获得", true)
+		//this.AddDiamond(recharge, "充值获得", true)
+		//this.SetDiamondCost(this.GetDiamondCost() + int64(recharge))
 	}
 }
 
@@ -897,6 +901,17 @@ func (this* GateUser) SendSortInfo(sorttype int32, begin int32, end int32) {
 		face := Redis().Get(keyface).Val();
 		send.List = append(send.List, &msg.SortInfo{Uid: pb.Int64(int64(userid)), Name:pb.String(name), Face:pb.String(face), Score:pb.Int32(int32(v.Score))})
 	}
+	this.SendMsg(send)
+}
+
+func (this* GateUser) GetRegistCash(num int32) {
+	err := def.HttpWechatCompanyPay(this.OpenId(), int64(num), "新用户返现")
+	if err != "" {
+		log.Error("玩家[%d]领取新用户返现失败", this.Id())
+		return
+	}
+	send := &msg.C2GW_RetGetCash{}
+	send.Num = pb.Int32(num)
 	this.SendMsg(send)
 }
 

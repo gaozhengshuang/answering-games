@@ -100,3 +100,12 @@ message GW2C_RetSort {
     repeated SortInfo list  = 2;     //信息列表
 }
 
+// 请求提现
+message C2GW_ReqGetCash {
+}
+
+// 返回现金
+message C2GW_RetGetCash {
+    optional int32 num = 1;         //单位分
+}
+
