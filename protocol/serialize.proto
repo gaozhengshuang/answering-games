@@ -36,6 +36,7 @@ message TaskData {
     optional int32 id = 1;         // 任务id
     optional int32 progress = 2;   // 本次完成进度
     optional int32 completed = 3;  // 完成标记
+    optional int32 getreward = 4;  // 领取奖励标示 
 }
 
 // 抽奖历史记录

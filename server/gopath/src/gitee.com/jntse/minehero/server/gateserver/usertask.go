@@ -41,7 +41,7 @@ func (this *UserTask) InitTask(){
 			if ok {
 				continue
 			}
-			task := &msg.TaskData{Id: pb.Int32(key), Progress: pb.Int32(0), Completed: pb.Int32(0)}
+			task := &msg.TaskData{Id: pb.Int32(key), Progress: pb.Int32(0), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
 			this.tasks[key] = task
 			this.curtask[value.MainTask] = key
 		}
@@ -104,7 +104,7 @@ func (this *UserTask) SetTaskProgress(id, progress int32) {
 	}
 	task, find := this.tasks[taskid]
 	if find == false {
-		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0)}
+		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
 		this.tasks[id] = task
 		return
 	}
@@ -118,7 +118,7 @@ func (this *UserTask) AddTaskProgress(id, progress int32) {
 	}
 	task, find := this.tasks[taskid]
 	if find == false {
-		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0)}
+		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
 		this.tasks[id] = task
 		return
 	}
@@ -173,6 +173,19 @@ func (this *UserTask) GiveTaskReward(id int32) {
 	count, _ := strconv.ParseInt(rewardpair[1], 10, 32)
 	
 	this.owner.AddItem(uint32(reward), uint32(count), "每日任务奖励", true)
+
+	newtaskid := this.curtask[id/1000*1000]
+	newtaskid++
+	_, ok := tbl.TaskBase.TTaskById[newtaskid]
+	if ok {
+		task := &msg.TaskData{Id: pb.Int32(newtaskid), Progress: pb.Int32(0), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
+		this.tasks[newtaskid] = task
+		delete(this.tasks, id)
+	}else{
+		this.tasks[id].Getreward = pb.Int32(1)
+	}
+
+	this.SendTaskList()
 
 	//
 	//if id == int32(msg.TaskId_RegistAccount) || id == int32(msg.TaskId_RegisterTopScore) || id == int32(msg.TaskId_InviteeTopScore) {
