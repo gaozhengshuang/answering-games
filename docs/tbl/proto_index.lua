@@ -142,7 +142,8 @@ export var ProtoId : table.IProtoIdDefine[] = [
 		{ Id : 137, Name : "msg.GW2C_RetSort" 	},
 		{ Id : 138, Name : "msg.C2GW_ReqGetCash" 	},
 		{ Id : 139, Name : "msg.C2GW_RetGetCash" 	},
-		{ Id : 140, Name : "msg.C2GW_UpdateUserInfo" 	}
+		{ Id : 140, Name : "msg.C2GW_UpdateUserInfo" 	},
+		{ Id : 141, Name : "msg.C2GW_ShareOk" 	}
 	]
 
 

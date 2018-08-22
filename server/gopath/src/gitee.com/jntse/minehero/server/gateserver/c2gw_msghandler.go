@@ -77,6 +77,8 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistProtoMsg(msg.C2GW_GetTaskReward{}, on_C2GW_GetTaskReward)
 	this.msgparser.RegistProtoMsg(msg.C2GW_ReqSort{}, on_C2GW_ReqSort)
 	this.msgparser.RegistProtoMsg(msg.C2GW_ReqGetCash{}, on_C2GW_ReqGetCash)
+	this.msgparser.RegistProtoMsg(msg.C2GW_ShareOk{}, on_C2GW_ShareOk)
+	this.msgparser.RegistProtoMsg(msg.C2GW_UpdateUserInfo{}, on_C2GW_UpdateUserInfo)
 
 	// 收战场消息
 	//this.msgparser.RegistProtoMsg(msg.BT_ReqEnterRoom{}, on_BT_ReqEnterRoom)
@@ -127,7 +129,6 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.GW2C_AnswerOk{})
 	this.msgparser.RegistSendProto(msg.C2GW_RetGetCash{})
 	this.msgparser.RegistSendProto(msg.GW2C_RetSort{})
-	this.msgparser.RegistSendProto(msg.C2GW_UpdateUserInfo{})
 
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})
@@ -845,5 +846,15 @@ func on_C2GW_UpdateUserInfo(session network.IBaseNetSession, message interface{}
 	Redis().Set(keyname, tmsg.GetName(), 0)
 	keyface := fmt.Sprintf("charbase_%d_face", user.Id())
 	Redis().Set(keyface, tmsg.GetFace(), 0)
+}
+
+func on_C2GW_ShareOk(session network.IBaseNetSession, message interface{}) {
+	user := ExtractSessionUser(session)
+	if user == nil {
+		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+		session.Close()
+		return
+	}
+	user.task.AddTaskProgress(Task_Share,1)
 }
 

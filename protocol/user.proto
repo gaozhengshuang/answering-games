@@ -118,3 +118,7 @@ message C2GW_UpdateUserInfo {
     optional string face = 2;
 }
 
+// 分享成功
+message C2GW_ShareOk {
+}
+

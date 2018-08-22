@@ -32,6 +32,7 @@ message UserWechat {
 // 玩家任务
 message UserTask {
     repeated TaskData tasks = 1;
+    optional int32  tasktime = 2;
 }
 
 message TaskData {

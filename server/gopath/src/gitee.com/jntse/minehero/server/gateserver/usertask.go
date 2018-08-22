@@ -63,6 +63,7 @@ func (this *UserTask) LoadBin(bin *msg.Serialize) {
 		this.tasks[data.GetId()] = data
 		this.curtask[data.GetId() / 1000 * 1000] = data.GetId() % 1000
 	}
+	this.tasktime = taskbin.GetTasktime()
 }
 
 func (this *UserTask) PackBin(bin *msg.Serialize) {
@@ -71,6 +72,7 @@ func (this *UserTask) PackBin(bin *msg.Serialize) {
 	for _, data := range this.tasks {
 		taskbin.Tasks = append(taskbin.Tasks, data)
 	}
+	taskbin.Tasktime = pb.Int32(this.tasktime)
 }
 
 func (this *UserTask) TaskFinish(id int32) {
@@ -155,6 +157,7 @@ func (this *UserTask) IsTaskFinish(id int32) bool {
 
 func (this *UserTask) GiveTaskReward(id int32) {
 	if !this.IsTaskFinish(id) {
+		log.Error("玩家[%s %d] 任务没有完成[%d]", this.owner.Name(), this.owner.Id(), id)
 		return
 	}
 
