@@ -112,3 +112,9 @@ message C2GW_RetGetCash {
     optional int32 num = 1;         //单位分
 }
 
+// 更新用户信息
+message C2GW_UpdateUserInfo {
+    optional string name = 1;
+    optional string face = 2;
+}
+

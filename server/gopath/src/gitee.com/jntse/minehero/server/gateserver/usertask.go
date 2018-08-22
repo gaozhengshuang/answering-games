@@ -36,14 +36,15 @@ func (this *UserTask) InitTask(){
 	if !util.IsSameDay(int64(this.tasktime), util.CURTIME()){
 		this.tasks = make(map[int32]*msg.TaskData)
 		this.curtask = make(map[int32]int32)
-		for key, value := range tbl.TaskBase.TTaskById{
+		for _, value := range tbl.TaskBase.TTaskById{
 			_, ok := this.curtask[value.MainTask]
 			if ok {
 				continue
 			}
-			task := &msg.TaskData{Id: pb.Int32(key), Progress: pb.Int32(0), State: pb.Int32(0)}
-			this.tasks[key] = task
-			this.curtask[value.MainTask] = key
+			initkey := value.MainTask + 1
+			task := &msg.TaskData{Id: pb.Int32(initkey), Progress: pb.Int32(0), State: pb.Int32(0)}
+			this.tasks[initkey] = task
+			this.curtask[value.MainTask] = initkey
 		}
 		this.tasktime = int32(util.CURTIME())
 	}

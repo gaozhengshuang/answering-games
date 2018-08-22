@@ -59,9 +59,10 @@ func NewGameRoomAgent(id int64, gtype int32) *GameRoomAgent {
 }
 
 func (this *GameRoomAgent) InitRobot() {
-    this.robotnum = util.RandBetween(1,int32(tbl.Global.Gamerobotnum))
+    //this.robotnum = util.RandBetween(1,int32(tbl.Global.Gamerobotnum))
+	this.robotnum = int32(tbl.Global.Gamerobotnum)
     for i := 1; i <= int(this.robotnum); i++ {
-        this.robotmap[int32(i)] = int32(util.CURTIME()) + util.RandBetween(1,3)
+        this.robotmap[int32(i)] = int32(util.CURTIME()) + util.RandBetween(1,8)
     }
     this.updateflag = false
 }
@@ -236,8 +237,8 @@ func (this *GameRoomAgent) DoingGame(){
             if this.answertime > 0 {
                 for k, v := range this.robottick {
                     if this.answertime == v {
-                        this.AnswerQuestion(k, this.curanswer)
-                        //this.AnswerQuestion(k, util.RandBetween(1,2))
+                        //this.AnswerQuestion(k, this.curanswer)
+                        this.AnswerQuestion(k, util.RandBetween(1,2))
                     }
                 }
                 this.answertime--
@@ -331,6 +332,7 @@ func (this *GameRoomAgent) GiveReward(){
 			user.AddYuanbao(uint32(reward), "比赛获胜", true)
 			if reward > this.cost {
 				user.task.AddTaskProgress(Task_GetCoin, reward - this.cost)
+				user.UpdateSortScore(0, reward - this.cost)
 			}
 			user.task.FillCompleteTask(&send.Tasks)
         }
@@ -419,7 +421,7 @@ func (this *GameRoomSvrManager) GetNotFullRoom(gtype int32) *GameRoomAgent{
 }
 
 func (this *GameRoomSvrManager) JoinGame(user *GateUser, gtype int32) {
-    if user.roomid != 0 || user.gameflag == true {
+    if user.roomid != 0 {
         return
     }
 
@@ -437,7 +439,7 @@ func (this *GameRoomSvrManager) JoinGame(user *GateUser, gtype int32) {
     //event := NewRemovePlatformCoinsEvent(int32(tbl.Global.Gametype[gtype]), 0, "红包答题扣除金币", user.RemovePlatformCoins, user.RemoveCoinsOk)
     //user.AsynEventInsert(event)
 
-    user.gameflag = true
+    //user.gameflag = true
 }
 
 func (this *GameRoomSvrManager) JoinGameOk(user *GateUser, gtype int32) {

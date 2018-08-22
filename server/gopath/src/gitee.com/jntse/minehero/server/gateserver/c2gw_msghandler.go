@@ -125,6 +125,9 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.GW2C_GameOver{})
 	this.msgparser.RegistSendProto(msg.GW2C_JoinOk{})
 	this.msgparser.RegistSendProto(msg.GW2C_AnswerOk{})
+	this.msgparser.RegistSendProto(msg.C2GW_RetGetCash{})
+	this.msgparser.RegistSendProto(msg.GW2C_RetSort{})
+	this.msgparser.RegistSendProto(msg.C2GW_UpdateUserInfo{})
 
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})
@@ -828,5 +831,19 @@ func on_C2GW_ReqGetCash(session network.IBaseNetSession, message interface{}) {
 		user.GetRegistCash(30)
 		user.registcash = 1
 	}
+}
+
+func on_C2GW_UpdateUserInfo(session network.IBaseNetSession, message interface{}) {
+	tmsg := message.(*msg.C2GW_UpdateUserInfo)
+	user := ExtractSessionUser(session)
+	if user == nil {
+		log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+		session.Close()
+		return
+	}
+	keyname := fmt.Sprintf("charbase_%d_name", user.Id())
+	Redis().Set(keyname, tmsg.GetName(), 0)
+	keyface := fmt.Sprintf("charbase_%d_face", user.Id())
+	Redis().Set(keyface, tmsg.GetFace(), 0)
 }
 

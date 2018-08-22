@@ -232,6 +232,7 @@ func (this *GateServer) Handler1sTick(now int64) {
 func (this *GateServer) Handler100msTick(now int64) {
 	this.waitpool.Tick(now)
 
+	this.gameroommgr.Tick(now)
 	// 
 	if this.quit_graceful && this.usermgr.Amount() == 0 {
 		g_KeyBordInput.Insert("quit")

@@ -556,6 +556,7 @@ func (this *GateUser) Syn(){
 	this.SendSign()
 	//this.CheckGiveFreeStep(util.CURTIME(), "上线跨整点")
 	this.CheckHaveCompensation()
+	this.SyncTime()
 	//this.SyncBigRewardPickNum()
 	//this.QueryPlatformCoins()
 }
@@ -926,5 +927,12 @@ func (this* GateUser) GetRegistCash(num int32) {
 	send := &msg.C2GW_RetGetCash{}
 	send.Num = pb.Int32(num)
 	this.SendMsg(send)
+}
+
+func (this* GateUser) SyncTime(){
+	this.SendMsg(&msg.GW2C_HeartBeat{
+		Uid: pb.Int64(int64(this.Id())),
+		Time: pb.Int64(util.CURTIMEUS()),
+	})
 }
 

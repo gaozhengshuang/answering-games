@@ -44,8 +44,8 @@
     "gamemaxmember":30,
     "gameroundtime":9,
     "gameroundcount":3,
-    "gamerobotnum":3,
-    "gamerewardper":10,
+    "gamerobotnum":29,
+    "gamerewardper":0,
 
 
     "//":"发货API，运费，几个包邮",
@@ -110,8 +110,8 @@
         "Mchid":"1500100872",
         "PaySecret":"RMEqvgecHWoa4Fkv5Q1gaBT82iuBl4hw",
 
-        "AppId":"wx50a65298622b1651",
-        "AppSecret":"6934870a36e3d0e3f02e32ef9bd013cb",
+        "AppId":"wx84b1ac649bf52b9b",
+        "AppSecret":"4cc40bd304534e13fedb6307c800541b",
         "Mchid1":"1495077762",
         "PaySecret1":"80a8c4a9d76c71e1701c001e3a41583e"
     },
