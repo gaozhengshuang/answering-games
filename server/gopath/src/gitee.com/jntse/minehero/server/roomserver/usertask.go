@@ -39,14 +39,14 @@ func (this *UserTask) PackBin(bin *msg.Serialize) {
 func (this *UserTask) TaskFinish(id int32) {	
 	task, find := this.tasks[id]
 	if find == false {
-		task = &msg.TaskData{Id:pb.Int32(id), Progress:pb.Int32(0), Completed:pb.Int32(1)}
+		task = &msg.TaskData{Id:pb.Int32(id), Progress:pb.Int32(0), State:pb.Int32(1)}
 		this.tasks[id] = task
 	}else {
-		if task.GetCompleted() == 1 {
+		if task.GetState() == 1 {
 			log.Info("玩家[%s %d] 重复完成任务[%d]", this.owner.Name(), this.owner.Id(), id)
 			return
 		}
-		task.Completed = pb.Int32(1)
+		task.State = pb.Int32(1)
 	}
 	this.GiveTaskReward(id)
 	log.Info("玩家[%s %d] 完成任务[%d]", this.owner.Name(), this.owner.Id(), id)
@@ -62,7 +62,7 @@ func (this *UserTask) SendTaskList() {
 
 func (this *UserTask) IsTaskFinish(id int32) bool {
 	task, find := this.tasks[id]
-	if find && task.GetCompleted() == 1 {
+	if find && task.GetState() == 1 {
 		return true
 	}
 	return false

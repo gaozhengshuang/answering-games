@@ -41,7 +41,7 @@ func (this *UserTask) InitTask(){
 			if ok {
 				continue
 			}
-			task := &msg.TaskData{Id: pb.Int32(key), Progress: pb.Int32(0), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
+			task := &msg.TaskData{Id: pb.Int32(key), Progress: pb.Int32(0), State: pb.Int32(0)}
 			this.tasks[key] = task
 			this.curtask[value.MainTask] = key
 		}
@@ -104,7 +104,7 @@ func (this *UserTask) SetTaskProgress(id, progress int32) {
 	}
 	task, find := this.tasks[taskid]
 	if find == false {
-		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
+		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), State: pb.Int32(0)}
 		this.tasks[id] = task
 		return
 	}
@@ -118,7 +118,7 @@ func (this *UserTask) AddTaskProgress(id, progress int32) {
 	}
 	task, find := this.tasks[taskid]
 	if find == false {
-		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
+		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), State : pb.Int32(0)}
 		this.tasks[id] = task
 		return
 	}
@@ -131,7 +131,7 @@ func (this *UserTask) AddTaskProgress(id, progress int32) {
 		task.Progress = pb.Int32(task.GetProgress() + progress)
 		if task.GetProgress() >= taskbase.Count{
 			task.Progress = pb.Int32(taskbase.Count)
-			task.Completed = pb.Int32(1)
+			task.State = pb.Int32(1)
 		}
 	}
 }
@@ -146,7 +146,7 @@ func (this *UserTask) SendTaskList() {
 
 func (this *UserTask) IsTaskFinish(id int32) bool {
 	task, find := this.tasks[id]
-	if find && task.GetCompleted() == 1 {
+	if find && task.GetState() == 1 {
 		return true
 	}
 	return false
@@ -178,11 +178,11 @@ func (this *UserTask) GiveTaskReward(id int32) {
 	newtaskid++
 	_, ok := tbl.TaskBase.TTaskById[newtaskid]
 	if ok {
-		task := &msg.TaskData{Id: pb.Int32(newtaskid), Progress: pb.Int32(0), Completed: pb.Int32(0), Getreward: pb.Int32(0)}
+		task := &msg.TaskData{Id: pb.Int32(newtaskid), Progress: pb.Int32(0), State: pb.Int32(0)}
 		this.tasks[newtaskid] = task
 		delete(this.tasks, id)
 	}else{
-		this.tasks[id].Getreward = pb.Int32(1)
+		this.tasks[id].State = pb.Int32(2)
 	}
 
 	this.SendTaskList()
@@ -195,7 +195,7 @@ func (this *UserTask) GiveTaskReward(id int32) {
 
 func (this *UserTask) FillCompleteTask (datas *[]*msg.TaskData) {
 	for _, task := range this.tasks {
-		if task.GetCompleted() == 1 && task.GetGetreward() == 0 {
+		if task.GetState() == 1{
 			*datas = append(*datas, task)
 		}
 	}

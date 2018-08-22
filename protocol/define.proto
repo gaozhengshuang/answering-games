@@ -76,3 +76,11 @@ enum MoneyType {
 enum SortType {
     WinScore = 0;       //赚钱榜
 }
+
+//任务状态
+enum TaskState {
+    Doing           = 0;    //进行中
+    Finish          = 1;    //完成
+    GetReward       = 2;    //领取完
+}
+
