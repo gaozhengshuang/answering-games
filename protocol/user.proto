@@ -98,6 +98,8 @@ message C2GW_ReqSort {
 message GW2C_RetSort {
     optional int32 type     = 1;
     repeated SortInfo list  = 2;     //信息列表
+    optional int32 myrank   = 3;
+    optional int32 mysorce  = 4;
 }
 
 // 请求提现
