@@ -15,6 +15,7 @@ message SimpleCounter {
     optional int64 money_cost = 3;
     optional int64 money_cost_reset = 4;
     optional int32 registcash = 5;
+    optional int32 winscore = 6;
 }
 
 // 免费赠送金币

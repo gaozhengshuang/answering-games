@@ -70,7 +70,8 @@ type DBUserData struct {
 	luckydraw	  	[]*msg.LuckyDrawItem
 	luckydrawtotal 	int64
 	totalrecharge	uint32		// 总充值
-	registcash		int32		
+	registcash		int32
+	winscore		int32	
 }
 
 // --------------------------------------------------------------------------
@@ -423,6 +424,7 @@ func (this *GateUser) PackBin() *msg.Serialize {
 	userbase.GetScounter().Freestep = pb.Int32(this.freestep)
 	userbase.GetScounter().Givestep = pb.Int64(this.givestep)
 	userbase.GetScounter().Registcash = pb.Int32(this.registcash)
+	userbase.GetScounter().Winscore = pb.Int32(this.winscore)
 	userbase.Wechat.Openid = pb.String(this.wechatopenid)
 	userbase.GetFreepresent().Count = pb.Int32(this.presentcount)
 	userbase.GetFreepresent().Tmrecord = pb.Int64(this.presentrecord)
@@ -467,6 +469,7 @@ func (this *GateUser) LoadBin() {
 	this.freestep = userbase.GetScounter().GetFreestep()
 	this.givestep = userbase.GetScounter().GetGivestep()
 	this.registcash = userbase.GetScounter().GetRegistcash()
+	this.winscore = userbase.GetScounter().GetWinscore()
 	this.wechatopenid = userbase.GetWechat().GetOpenid()
 	this.presentcount = userbase.GetFreepresent().GetCount()
 	this.presentrecord = userbase.GetFreepresent().GetTmrecord()
@@ -871,8 +874,10 @@ func (this* GateUser) DoAddMidasMoneyResult(balance int64, errmsg string, amount
 }
 
 func (this* GateUser) UpdateSortScore(sorttype int32, score int32) {
+	this.winscore += score
+	log.Info("用户[%d] 增加比分[%d]总比分[%d]", this.Id(), score, this.winscore)
 	key := fmt.Sprintf("gamesort_%d", sorttype)
-	err := Redis().ZAdd(key, redis.Z{Score:float64(score), Member:string(strconv.Itoa(int(this.Id())))}).Err()
+	err := Redis().ZAdd(key, redis.Z{Score:float64(this.winscore), Member:string(strconv.Itoa(int(this.Id())))}).Err()
 	if nil != err {
 		log.Error("用户%d 更新比分失败", this.Id())
 	}
@@ -892,6 +897,8 @@ func (this* GateUser) SendSortInfo(sorttype int32, begin int32, end int32) {
 
 	send := &msg.GW2C_RetSort{}
 	send.Type = pb.Int32(sorttype)
+	send.Myrank = pb.Int32(int32(Redis().ZRevRank(key, string(strconv.Itoa(int(this.Id())))).Val()))
+	send.Myscore = pb.Int32(this.winscore)
 	for _, v := range vals {
 		struserid := v.Member.(string)
 		userid ,_ := strconv.ParseInt(struserid, 10, 32)
