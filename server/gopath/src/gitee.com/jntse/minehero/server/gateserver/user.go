@@ -899,6 +899,7 @@ func (this* GateUser) SendSortInfo(sorttype int32, begin int32, end int32) {
 	send.Type = pb.Int32(sorttype)
 	send.Myrank = pb.Int32(int32(Redis().ZRevRank(key, string(strconv.Itoa(int(this.Id())))).Val()))
 	send.Myscore = pb.Int32(this.winscore)
+	rank := begin + 1
 	for _, v := range vals {
 		struserid := v.Member.(string)
 		userid ,_ := strconv.ParseInt(struserid, 10, 32)
@@ -906,7 +907,12 @@ func (this* GateUser) SendSortInfo(sorttype int32, begin int32, end int32) {
 		name := Redis().Get(keyname).Val();
 		keyface := fmt.Sprintf("charbase_%d_face", userid)
 		face := Redis().Get(keyface).Val();
-		send.List = append(send.List, &msg.SortInfo{Uid: pb.Int64(int64(userid)), Name:pb.String(name), Face:pb.String(face), Score:pb.Int32(int32(v.Score))})
+		send.List = append(send.List, &msg.SortInfo{Uid: pb.Int64(int64(userid)), 
+			Name:pb.String(name), 
+			Face:pb.String(face), 
+			Score:pb.Int32(int32(v.Score)),
+			Rank:pb.Int32(int32(rank))})
+		rank++
 	}
 	this.SendMsg(send)
 }

@@ -84,6 +84,7 @@ message SortInfo {
     optional string name    = 2;    //玩家名字
     optional string face    = 3;    //玩家头像
     optional int32  score   = 4;    //玩家比分
+    optional int32  rank    = 5;    //排名
 }
 
 
