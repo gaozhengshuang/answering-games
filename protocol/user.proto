@@ -122,3 +122,13 @@ message C2GW_UpdateUserInfo {
 message C2GW_ShareOk {
 }
 
+// 奖励信息
+message CmnRewardInfo {
+    optional int32 itemid = 1;
+    optional int32 num = 2;
+}
+
+message GW2C_CmnRewardInfo {
+    repeated CmnRewardInfo list = 1;
+}
+

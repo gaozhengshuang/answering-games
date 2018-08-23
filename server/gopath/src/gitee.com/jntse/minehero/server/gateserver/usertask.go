@@ -61,7 +61,7 @@ func (this *UserTask) LoadBin(bin *msg.Serialize) {
 	}
 	for _, data := range taskbin.GetTasks() {
 		this.tasks[data.GetId()] = data
-		this.curtask[data.GetId() / 1000 * 1000] = data.GetId() % 1000
+		this.curtask[data.GetId() / 1000 * 1000] = data.GetId()
 	}
 	this.tasktime = taskbin.GetTasktime()
 }
@@ -117,24 +117,26 @@ func (this *UserTask) SetTaskProgress(id, progress int32) {
 func (this *UserTask) AddTaskProgress(id, progress int32) {
 	taskid, ok := this.curtask[id]
 	if ok == false {
+		log.Error("玩家[%s %d] 找不到当前任务[%d]", this.owner.Name(), this.owner.Id(), id)
 		return
 	}
 	task, find := this.tasks[taskid]
 	if find == false {
-		task = &msg.TaskData{Id: pb.Int32(id), Progress: pb.Int32(progress), State : pb.Int32(0)}
-		this.tasks[id] = task
+		log.Error("玩家[%s %d] 找不到任务列表[%d]", this.owner.Name(), this.owner.Id(), id)
 		return
 	}
-	taskbase, find := tbl.TaskBase.TTaskById[taskid]
-	if find == false {
+	taskbase, configfind := tbl.TaskBase.TTaskById[taskid]
+	if configfind == false {
 		log.Error("玩家[%s %d] 找不到任务配置[%d]", this.owner.Name(), this.owner.Id(), id)
 		return
 	}
 	if task.GetProgress() < taskbase.Count {
 		task.Progress = pb.Int32(task.GetProgress() + progress)
+		log.Info("玩家[%s %d] 任务[%d]更新[%d]", this.owner.Name(), this.owner.Id(), taskid, task.GetProgress())
 		if task.GetProgress() >= taskbase.Count{
 			task.Progress = pb.Int32(taskbase.Count)
 			task.State = pb.Int32(1)
+			log.Info("玩家[%s %d] 任务[%d]完成", this.owner.Name(), this.owner.Id(), taskid)
 		}
 	}
 }
@@ -184,6 +186,7 @@ func (this *UserTask) GiveTaskReward(id int32) {
 	if ok {
 		task := &msg.TaskData{Id: pb.Int32(newtaskid), Progress: pb.Int32(0), State: pb.Int32(0)}
 		this.tasks[newtaskid] = task
+		this.curtask[id/1000*1000] = newtaskid
 		delete(this.tasks, id)
 	}else{
 		this.tasks[id].State = pb.Int32(2)

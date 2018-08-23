@@ -624,6 +624,7 @@ func (this *GateUser) CheckDisconnectTimeOut(now int64) {
 
 // 真下线(存盘，从Gate清理玩家数据)
 func (this *GateUser) Logout() {
+	GameRoomSvrMgr().LeaveGame(this)
 	this.online = false
 	this.tm_logout = util.CURTIME()
 	this.cleanup = true
@@ -803,7 +804,7 @@ func (this *GateUser) OnlineTaskCheck() {
 		log.Error("玩家[%s %d] 上线获取邀请注册任务计数失败 redis err[%s]", this.Name(), this.Id(), errget)
 	}
 	if invite_count != 0 {
-		this.task.SetTaskProgress(int32(msg.TaskId_InviteRegist), int32(invite_count))
+		//this.task.SetTaskProgress(int32(msg.TaskId_InviteRegist), int32(invite_count))
 	}
 
 }

@@ -23,7 +23,7 @@ type GameRoomAgent struct {
     updateflag          bool                                //更新标示
     curquestion         int32                               //当前题目
     curanswer           int32                               //当前答案
-    answerstatus        int32
+    answerstatus        int32								//答题状态
     answertime          int32
     lasttick            int32                               //上次tick时间
     robottick           map[int64]int32            
@@ -32,6 +32,7 @@ type GameRoomAgent struct {
     robotmap            map[int32]int32
     cost                int32 
     robotnum            int32
+	roomstate			int32								//房间状态
 }
 
 func NewGameRoomAgent(id int64, gtype int32) *GameRoomAgent {
@@ -49,6 +50,7 @@ func NewGameRoomAgent(id int64, gtype int32) *GameRoomAgent {
     gate.answerstatus = 0
     gate.answertime = 0
     gate.waittime = 2
+	gate.roomstate = 0
     gate.gametype = gtype
     gate.robottick = make(map[int64]int32)
     gate.robotmap = make(map[int32]int32)
@@ -185,34 +187,39 @@ func (this *GameRoomAgent) SendMsgById(msg pb.Message, uid int64) {
 }
 
 func (this *GameRoomAgent) Tick() bool{
-    if this.lasttick == int32(util.CURTIME()){
-        return true
-    }
-    this.lasttick = int32(util.CURTIME())
-    this.UpdateAll()
-    if  this.starttime >= int32(util.CURTIME()) {
-        for k, v := range this.robotmap {
-            if int32(util.CURTIME()) == v {
-                member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(k)), Name : pb.String(GateSvr().GetRandNickName()), Answer : pb.Int32(util.RandBetween(1,2))}
-                this.AddMember(member, int32(this.cost))                
-            }
-        }
-    }
+	if this.lasttick == int32(util.CURTIME()){
+		return true
+	}
+	this.lasttick = int32(util.CURTIME())
+	this.UpdateAll()
+	switch (this.roomstate) {
+	case 0:
+		for k, v := range this.robotmap {
+			if int32(util.CURTIME()) == v {
+				member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(k)), Name : pb.String(GateSvr().GetRandNickName()), Answer : pb.Int32(util.RandBetween(1,2))}
+				this.AddMember(member, int32(this.cost))
+			}
+		}
+		if len(this.members) >= int(tbl.Global.Gamemaxmember) || this.starttime < int32(util.CURTIME()) {
+			this.roomstate = 1
+		}
+	case 1:
+		this.DoingGame()
+		if this.endgameflag {
+			this.roomstate = 2
+		}
+	case 2:
+		this.GiveReward()
+		return false
 
-    if len(this.members) >= int(tbl.Global.Gamemaxmember) || this.starttime < int32(util.CURTIME()) {
-        this.DoingGame()
-    }
-    if this.endgameflag {
-        this.GiveReward()
-        return false        
-    }
-    return true
+	}
+	return true
 }
 
 func (this *GameRoomAgent) IsStart() bool {
-    if len(this.members) >= int(tbl.Global.Gamemaxmember) || (this.starttime != 0 && this.starttime < int32(util.CURTIME())){
-        return true
-    }
+	if this.roomstate != 0 {
+		return true
+	}
     return false
 }
 
