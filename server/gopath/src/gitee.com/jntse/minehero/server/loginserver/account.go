@@ -112,6 +112,7 @@ func QuickLogin(session network.IBaseNetSession, account string) bool {
 	}
 
 	log.Info("账户[%s] 快速登陆Gate[ip:%s port:%d]", account, ip, port)
+	ip = fmt.Sprintf("dati-service%d.giantfun.cn", port)
 	session.SendCmd(newL2C_RetLogin("", ip, port, vkey))
 	Login().CheckInSetAdd(account, session)		// 避免同时登陆
 	return true

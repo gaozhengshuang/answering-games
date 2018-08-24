@@ -145,7 +145,8 @@ export var ProtoId : table.IProtoIdDefine[] = [
 		{ Id : 140, Name : "msg.C2GW_UpdateUserInfo" 	},
 		{ Id : 141, Name : "msg.C2GW_ShareOk" 	},
 		{ Id : 142, Name : "msg.CmnRewardInfo" 	},
-		{ Id : 143, Name : "msg.GW2C_CmnRewardInfo" 	}
+		{ Id : 143, Name : "msg.GW2C_CmnRewardInfo" 	},
+		{ Id : 144, Name : "msg.GW2C_ShareTime" 	}
 	]
 
 

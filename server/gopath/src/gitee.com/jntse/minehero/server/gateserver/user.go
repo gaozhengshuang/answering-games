@@ -100,6 +100,7 @@ type GateUser struct {
 	roomid			int64
 	gameflag		bool
 	cmnrewardmap	map[int32]int32
+	sharetime		int32
 }
 
 func NewGateUser(account, key, token string) *GateUser {
@@ -118,6 +119,7 @@ func NewGateUser(account, key, token string) *GateUser {
 	u.roomid = 0
 	u.gameflag = false
 	u.cmnrewardmap = make(map[int32]int32)
+	u.sharetime = 0
 	return u
 }
 
@@ -427,6 +429,7 @@ func (this *GateUser) PackBin() *msg.Serialize {
 	userbase.GetScounter().Givestep = pb.Int64(this.givestep)
 	userbase.GetScounter().Registcash = pb.Int32(this.registcash)
 	userbase.GetScounter().Winscore = pb.Int32(this.winscore)
+	userbase.GetScounter().Sharetime = pb.Int32(this.sharetime)
 	userbase.Wechat.Openid = pb.String(this.wechatopenid)
 	userbase.GetFreepresent().Count = pb.Int32(this.presentcount)
 	userbase.GetFreepresent().Tmrecord = pb.Int64(this.presentrecord)
@@ -472,6 +475,7 @@ func (this *GateUser) LoadBin() {
 	this.givestep = userbase.GetScounter().GetGivestep()
 	this.registcash = userbase.GetScounter().GetRegistcash()
 	this.winscore = userbase.GetScounter().GetWinscore()
+	this.sharetime = userbase.GetScounter().GetSharetime()
 	this.wechatopenid = userbase.GetWechat().GetOpenid()
 	this.presentcount = userbase.GetFreepresent().GetCount()
 	this.presentrecord = userbase.GetFreepresent().GetTmrecord()
@@ -548,7 +552,7 @@ func (this *GateUser) Online(session network.IBaseNetSession) bool {
 	this.Syn()
 
 	// 同步midas平台充值金额
-	this.SynMidasBalance()
+	//this.SynMidasBalance()
 
 	return true
 }
@@ -559,6 +563,7 @@ func (this *GateUser) Syn(){
 	//this.CheckGiveFreeStep(util.CURTIME(), "上线跨整点")
 	this.CheckHaveCompensation()
 	this.SyncTime()
+	this.SendShareTime()
 	//this.SyncBigRewardPickNum()
 	//this.QueryPlatformCoins()
 }
@@ -948,6 +953,12 @@ func (this* GateUser) NotifyReward() {
 	for k, v := range this.cmnrewardmap {
 		send.List = append(send.List, &msg.CmnRewardInfo{Itemid:pb.Int32(k), Num:pb.Int32(v)})
 	}
+	this.SendMsg(send)
+}
+
+func (this* GateUser) SendShareTime() {
+	send := &msg.GW2C_ShareTime{}
+	send.Nexttime = pb.Int32(this.sharetime)
 	this.SendMsg(send)
 }
 

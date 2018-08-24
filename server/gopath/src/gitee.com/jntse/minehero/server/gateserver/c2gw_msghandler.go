@@ -130,6 +130,7 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.C2GW_RetGetCash{})
 	this.msgparser.RegistSendProto(msg.GW2C_RetSort{})
 	this.msgparser.RegistSendProto(msg.GW2C_CmnRewardInfo{})
+	this.msgparser.RegistSendProto(msg.GW2C_ShareTime{})
 
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})
@@ -856,6 +857,11 @@ func on_C2GW_ShareOk(session network.IBaseNetSession, message interface{}) {
 		session.Close()
 		return
 	}
-	user.task.AddTaskProgress(Task_Share,1)
+	if user.sharetime < int32(util.CURTIME()) {
+		user.task.AddTaskProgress(Task_Share,1)
+		user.sharetime = int32(util.CURTIME()) + int32(tbl.Global.Sharetime)
+		user.SendShareTime()
+	}
 }
+
 

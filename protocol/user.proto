@@ -132,3 +132,8 @@ message GW2C_CmnRewardInfo {
     repeated CmnRewardInfo list = 1;
 }
 
+// 
+message GW2C_ShareTime {
+    optional int32 nexttime = 1;
+}
+

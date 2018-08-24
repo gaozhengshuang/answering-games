@@ -120,8 +120,9 @@ func on_GW2L_RegistUserRet(session network.IBaseNetSession, message interface{})
 		return
 	}
 
+	host.Ip = fmt.Sprintf("dati-service%d.giantfun.cn", host.Port)
 	Login().SendMsg(sid, newL2C_RetLogin("", host.Ip, host.Port, verifykey))
-	log.Info("注册玩家到Gate成功 sid[%d] [%s] [%s] [%s]", sid, account, ipport, verifykey)
+	log.Info("注册玩家到Gate成功 sid[%d] [%s] [%s] [%s] hostip [%s]", sid, account, ipport, verifykey, host.Ip)
 	return
 }
 
