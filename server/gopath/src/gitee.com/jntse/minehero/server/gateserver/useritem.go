@@ -32,6 +32,7 @@ func (this *GateUser) AddItem(item uint32, num uint32, reason string, syn bool) 
 		this.bag.AddItem(item, num, reason)
 	}
 	//CountMgr().AddGet(item, num)
+	this.cmnrewardmap[int32(item)] += int32(num)
 	RCounter().IncrByDate("item_add", uint32(item), num)
 }
 

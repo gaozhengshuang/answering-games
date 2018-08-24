@@ -99,6 +99,7 @@ type GateUser struct {
 	synbalance		bool		// 充值中
 	roomid			int64
 	gameflag		bool
+	cmnrewardmap	map[int32]int32
 }
 
 func NewGateUser(account, key, token string) *GateUser {
@@ -116,6 +117,7 @@ func NewGateUser(account, key, token string) *GateUser {
 	u.broadcastbuffer = make([]uint64,0)
 	u.roomid = 0
 	u.gameflag = false
+	u.cmnrewardmap = make(map[int32]int32)
 	return u
 }
 
@@ -935,5 +937,17 @@ func (this* GateUser) SyncTime(){
 		Uid: pb.Int64(int64(this.Id())),
 		Time: pb.Int64(util.CURTIMEUS()),
 	})
+}
+
+func (this* GateUser) ClearReward() {
+	this.cmnrewardmap = make(map[int32]int32)
+}
+
+func (this* GateUser) NotifyReward() {
+	send := &msg.GW2C_CmnRewardInfo{}
+	for k, v := range this.cmnrewardmap {
+		send.List = append(send.List, &msg.CmnRewardInfo{Itemid:pb.Int32(k), Num:pb.Int32(v)})
+	}
+	this.SendMsg(send)
 }
 

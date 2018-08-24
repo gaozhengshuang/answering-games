@@ -61,8 +61,8 @@ func NewGameRoomAgent(id int64, gtype int32) *GameRoomAgent {
 }
 
 func (this *GameRoomAgent) InitRobot() {
-    //this.robotnum = util.RandBetween(1,int32(tbl.Global.Gamerobotnum))
-	this.robotnum = int32(tbl.Global.Gamerobotnum)
+    this.robotnum = util.RandBetween(int32(tbl.Global.Gamerobotmin),int32(tbl.Global.Gamerobotnum))
+	//this.robotnum = int32(tbl.Global.Gamerobotnum)
     for i := 1; i <= int(this.robotnum); i++ {
         this.robotmap[int32(i)] = int32(util.CURTIME()) + util.RandBetween(1,8)
     }

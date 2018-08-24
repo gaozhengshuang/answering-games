@@ -40,56 +40,56 @@ case $cmd in
 test)
 ## 测试环境
 echo "测试环境版本生成中..."
-wainum=$(ssh brickcrush@210.73.214.74 "ls -d -l /home/brickcrush/version/${today}R* | wc -l")
+wainum=$(ssh question@210.73.214.74 "ls -d -l /home/question/version/${today}R* | wc -l")
 wainum=$((wainum + 1))
 waibuildDirName=${today}R${wainum}_PP
 echo $waibuildDirName
 
-ssh brickcrush@210.73.214.74 "mkdir -p /home/brickcrush/version/${waibuildDirName}"
-scp pack/$filename brickcrush@210.73.214.74:/home/brickcrush/version/${waibuildDirName}
-ssh brickcrush@210.73.214.74 "cd /home/brickcrush/version/${waibuildDirName}/ && tar xzvf *.tar.gz"
-ssh brickcrush@210.73.214.74 "rm /home/brickcrush/version/${waibuildDirName}/release/conf -rf"
-ssh brickcrush@210.73.214.74 "cp /home/brickcrush/version/config/conf /home/brickcrush/version/${waibuildDirName}/release/ -rvf"
-ssh brickcrush@210.73.214.74 "cp /home/brickcrush/version/config/runserver.sh /home/brickcrush/version/${waibuildDirName}/release/ -rvf"
-ssh brickcrush@210.73.214.74 "cp /home/brickcrush/version/config/watch.sh /home/brickcrush/version/${waibuildDirName}/release/ -rvf"
+ssh question@210.73.214.74 "mkdir -p /home/question/version/${waibuildDirName}"
+scp pack/$filename question@210.73.214.74:/home/question/version/${waibuildDirName}
+ssh question@210.73.214.74 "cd /home/question/version/${waibuildDirName}/ && tar xzvf *.tar.gz"
+ssh question@210.73.214.74 "rm /home/question/version/${waibuildDirName}/release/conf -rf"
+ssh question@210.73.214.74 "cp /home/question/version/config/conf /home/question/version/${waibuildDirName}/release/ -rvf"
+ssh question@210.73.214.74 "cp /home/question/version/config/runserver.sh /home/question/version/${waibuildDirName}/release/ -rvf"
+ssh question@210.73.214.74 "cp /home/question/version/config/watch.sh /home/question/version/${waibuildDirName}/release/ -rvf"
 ;;
 
 banshu)
 ## 版署版本
-wainum=$(ssh brickcrush@210.73.214.68 "ls -d -l /home/brickcrush/version/${today}R* | wc -l")
+wainum=$(ssh question@210.73.214.68 "ls -d -l /home/question/version/${today}R* | wc -l")
 wainum=$((wainum + 1))
 waibuildDirName=${today}R${wainum}_PP
 echo $waibuildDirName
 
-echo "版署版本版本生成中..."
-ssh brickbanshu@210.73.214.68 "mkdir -p /home/brickbanshu/version/${waibuildDirName}"
-scp pack/$filename brickbanshu@210.73.214.68:/home/brickbanshu/version/${waibuildDirName}
-ssh brickbanshu@210.73.214.68 "cd /home/brickbanshu/version/${waibuildDirName}/ && tar xzvf *.tar.gz"
-ssh brickbanshu@210.73.214.68 "rm /home/brickbanshu/version/${waibuildDirName}/release/conf -rf"
-ssh brickbanshu@210.73.214.68 "cp /home/brickbanshu/version/config/conf /home/brickbanshu/version/${waibuildDirName}/release/ -rvf"
-ssh brickbanshu@210.73.214.68 "cp /home/brickbanshu/version/config/runserver.sh /home/brickbanshu/version/${waibuildDirName}/release/ -rvf"
-ssh brickbanshu@210.73.214.68 "cp /home/brickbanshu/version/config/watch.sh /home/brickbanshu/version/${waibuildDirName}/release/ -rvf"
+#echo "版署版本版本生成中..."
+#ssh brickbanshu@210.73.214.68 "mkdir -p /home/brickbanshu/version/${waibuildDirName}"
+#scp pack/$filename brickbanshu@210.73.214.68:/home/brickbanshu/version/${waibuildDirName}
+#ssh brickbanshu@210.73.214.68 "cd /home/brickbanshu/version/${waibuildDirName}/ && tar xzvf *.tar.gz"
+#ssh brickbanshu@210.73.214.68 "rm /home/brickbanshu/version/${waibuildDirName}/release/conf -rf"
+#ssh brickbanshu@210.73.214.68 "cp /home/brickbanshu/version/config/conf /home/brickbanshu/version/${waibuildDirName}/release/ -rvf"
+#ssh brickbanshu@210.73.214.68 "cp /home/brickbanshu/version/config/runserver.sh /home/brickbanshu/version/${waibuildDirName}/release/ -rvf"
+#ssh brickbanshu@210.73.214.68 "cp /home/brickbanshu/version/config/watch.sh /home/brickbanshu/version/${waibuildDirName}/release/ -rvf"
 ;;
 
 release)
 ## 正式环境版本
-wainum=$(ssh brickcrush@210.73.214.71 "ls -d -l /home/brickcrush/version/${today}R* | wc -l")
+wainum=$(ssh question@210.73.214.71 "ls -d -l /home/question/version/${today}R* | wc -l")
 wainum=$((wainum + 1))
 waibuildDirName=${today}R${wainum}_PP
 echo $waibuildDirName
 
 echo "正式环境版本生成中..."
-ssh brickcrush@210.73.214.71 "mkdir -p /home/brickcrush/version/${waibuildDirName}"
-scp pack/$filename brickcrush@210.73.214.71:/home/brickcrush/version/${waibuildDirName}
-ssh brickcrush@210.73.214.71 "cd /home/brickcrush/version/${waibuildDirName}/ && tar xzvf *.tar.gz"
-ssh brickcrush@210.73.214.71 "rm /home/brickcrush/version/${waibuildDirName}/release/conf -rf"
-ssh brickcrush@210.73.214.71 "cp /home/brickcrush/version/config/conf /home/brickcrush/version/${waibuildDirName}/release/ -rvf"
-ssh brickcrush@210.73.214.71 "cp /home/brickcrush/version/config/runserver.sh /home/brickcrush/version/${waibuildDirName}/release/ -rvf"
-ssh brickcrush@210.73.214.71 "cp /home/brickcrush/version/config/watch.sh /home/brickcrush/version/${waibuildDirName}/release/ -rvf"
+ssh question@210.73.214.71 "mkdir -p /home/question/version/${waibuildDirName}"
+scp pack/$filename question@210.73.214.71:/home/question/version/${waibuildDirName}
+ssh question@210.73.214.71 "cd /home/question/version/${waibuildDirName}/ && tar xzvf *.tar.gz"
+ssh question@210.73.214.71 "rm /home/question/version/${waibuildDirName}/release/conf -rf"
+ssh question@210.73.214.71 "cp /home/question/version/config/conf /home/question/version/${waibuildDirName}/release/ -rvf"
+ssh question@210.73.214.71 "cp /home/question/version/config/runserver.sh /home/question/version/${waibuildDirName}/release/ -rvf"
+ssh question@210.73.214.71 "cp /home/question/version/config/watch.sh /home/question/version/${waibuildDirName}/release/ -rvf"
 
-#ssh brickcrush@210.73.214.68 "scp -r /home/brickcrush/version/${waibuildDirName} brickcrush@210.73.214.71:/home/brickcrush/version/"
-#ssh brickcrush@210.73.214.68 "scp -r /home/brickcrush/version/${waibuildDirName} brickcrush@210.73.214.76:/home/brickcrush/version/"
-#ssh brickcrush@210.73.214.68 "scp -r /home/brickcrush/version/${waibuildDirName} brickcrush@210.73.214.77:/home/brickcrush/version/"
+#ssh question@210.73.214.68 "scp -r /home/question/version/${waibuildDirName} question@210.73.214.71:/home/question/version/"
+#ssh question@210.73.214.68 "scp -r /home/question/version/${waibuildDirName} question@210.73.214.76:/home/question/version/"
+#ssh question@210.73.214.68 "scp -r /home/question/version/${waibuildDirName} question@210.73.214.77:/home/question/version/"
 ;;
 
 esac

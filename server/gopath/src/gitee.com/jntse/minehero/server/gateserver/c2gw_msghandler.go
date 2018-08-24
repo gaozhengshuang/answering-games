@@ -129,6 +129,7 @@ func (this *C2GWMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.GW2C_AnswerOk{})
 	this.msgparser.RegistSendProto(msg.C2GW_RetGetCash{})
 	this.msgparser.RegistSendProto(msg.GW2C_RetSort{})
+	this.msgparser.RegistSendProto(msg.GW2C_CmnRewardInfo{})
 
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})

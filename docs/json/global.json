@@ -43,8 +43,9 @@
     "gamewaittime":20,
     "gamemaxmember":30,
     "gameroundtime":9,
-    "gameroundcount":3,
-    "gamerobotnum":29,
+    "gameroundcount":5,
+    "gamerobotnum":20,
+    "gamerobotmin":10,
     "gamerewardper":0,
 
 

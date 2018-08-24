@@ -177,8 +177,10 @@ func (this *UserTask) GiveTaskReward(id int32) {
 	}
 	reward, _ := strconv.ParseInt(rewardpair[0], 10, 32)
 	count, _ := strconv.ParseInt(rewardpair[1], 10, 32)
-	
+
+	this.owner.ClearReward()
 	this.owner.AddItem(uint32(reward), uint32(count), "每日任务奖励", true)
+	this.owner.NotifyReward()
 
 	newtaskid := this.curtask[id/1000*1000]
 	newtaskid++
