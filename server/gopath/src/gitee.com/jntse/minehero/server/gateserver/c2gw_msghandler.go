@@ -848,6 +848,9 @@ func on_C2GW_UpdateUserInfo(session network.IBaseNetSession, message interface{}
 	Redis().Set(keyname, tmsg.GetName(), 0)
 	keyface := fmt.Sprintf("charbase_%d_face", user.Id())
 	Redis().Set(keyface, tmsg.GetFace(), 0)
+
+	user.EntityBase().Name = pb.String(tmsg.GetName())
+	user.EntityBase().Face = pb.String(tmsg.GetFace())
 }
 
 func on_C2GW_ShareOk(session network.IBaseNetSession, message interface{}) {

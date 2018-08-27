@@ -48,7 +48,7 @@ func (this* C2LSMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.L2C_RetRegistAccount{})
 }
 
-func newL2C_RetLogin(reason string, ip string, port int, key string) *msg.L2C_RetLogin {
+func newL2C_RetLogin(reason string, ip string, port int, key string, host string) *msg.L2C_RetLogin {
 	send := &msg.L2C_RetLogin {
 		Result : pb.Int32(1),
 		Reason : pb.String(reason),
@@ -57,6 +57,7 @@ func newL2C_RetLogin(reason string, ip string, port int, key string) *msg.L2C_Re
 		Port : pb.Int(port),
 		},
 		Verifykey : pb.String(key),
+		Host : pb.String(host),
 	}
 	if reason != "" {
 		send.Result = pb.Int32(0)
@@ -157,7 +158,7 @@ func on_C2L_ReqLogin(session network.IBaseNetSession, message interface{}) {
 
 	if errcode != "" {
 		log.Info("账户:[%s] sid[%d] 登陆失败[%s]", account, session.Id(), errcode)
-		session.SendCmd(newL2C_RetLogin(errcode, "", 0, ""))
+		session.SendCmd(newL2C_RetLogin(errcode, "", 0, "", ""))
 		session.Close()
 	}
 }
@@ -230,7 +231,7 @@ func on_C2L_ReqLoginWechat(session network.IBaseNetSession, message interface{})
 
 	if errcode != "" {
 		log.Info("账户:[%s] sid[%d] 登陆失败[%s]", account, session.Id(), errcode)
-		session.SendCmd(newL2C_RetLogin(errcode, "", 0, ""))
+		session.SendCmd(newL2C_RetLogin(errcode, "", 0, "", ""))
 		session.Close()
 	}
 }
