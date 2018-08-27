@@ -7,7 +7,9 @@ let Game = {
     ChickenDefine: require('./Util/ChickenDefine'),
     Tools: require('./Util/Tools'),
     HttpUtil: require('./Util/HttpUtil'),
-    Platform: require('./Util/Platform'),
+    PlatformDefine: require('./Util/PlatformDefine'),
+
+    Platform: require('./Platform/Common'),
 
     AudioController: require('./Controller/AudioController'),
     ConfigController: require('./Controller/ConfigController'),
@@ -20,8 +22,14 @@ let Game = {
 
     UserModel: require('./Model/User'),
     RoomModel: require('./Model/Room'),
+    TaskModel: require('./Model/Task'),
 
     GameInstance: null
 };
+
+if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+    Game.Platform =  require('./Platform/WechatGame');
+}
+
 module.exports = Game;
 

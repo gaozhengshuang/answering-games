@@ -49,7 +49,7 @@ cc.Class({
         Game.Tools.AutoFit(this.targetCanvas);
 
         this.stoneStartY = -Game.GameController.winHeight / 2 - 200;
-        this.stoneEndY = Game.GameController.winHeight / 2 + 200;
+        this.stoneEndY = Game.GameController.winHeight / 2 + 500;
         this.stoneTime = (this.stoneEndY - this.stoneStartY) / stoneSpeed;
     },
 
@@ -134,6 +134,7 @@ cc.Class({
         Game.NotificationController.Off(Game.Define.EVENT_KEY.ROOMINFO_UPDATEANSWER, this, this.onUpdateAnswer);
         Game.NotificationController.Off(Game.Define.EVENT_KEY.CHANGE_GAMESTATE, this, this.onGameStateChange);
         Game.NotificationController.Off(Game.Define.EVENT_KEY.CONNECT_TO_GATESERVER, this, this.onLoginComplete);
+        Game.NotificationController.Off(Game.Define.EVENT_KEY.ROOMINFO_STARTGAME, this, this.onStartGame);
         Game.NetWorkController.RemoveListener('msg.GW2C_AnswerOk', this, this.onGW2C_AnswerOk);
     },
 
@@ -282,7 +283,7 @@ cc.Class({
             Game.AudioController.SetMusicVolume(1);
         });
         this.loseResultView.node.active = true;
-        this.loseResultView.Init(Game.GameController.bets);
+        this.loseResultView.Init();
         this.loseNode.scaleX = 0;
         this.loseNode.scaleY = 0;
         this.loseNode.runAction(cc.sequence([
@@ -367,7 +368,6 @@ cc.Class({
         this.countDownLabel.string = 0;
     },
     onGW2C_AnswerOk(msgid, data) {
-        console.log(this);
         this.result = data.answer;
         this._updateResultButton();
         this._updatePlayerView(this.selfPlayerView, this.result, true);

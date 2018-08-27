@@ -72,7 +72,7 @@ NetWorkController.prototype.Send = function (name, obj, cb) {
     console.log('发送 ' + name + ' 消息');
     info.set(head, 0);
     info.set(msg, 4);
-    this.sock.send(info);
+    this.sock.send(info.buffer);
     Tools.InvokeCallback(cb, null);
 };
 
@@ -115,40 +115,15 @@ NetWorkController.prototype.RemoveListener = function (name, caller, handler) {
 
 //事件函数
 NetWorkController.prototype.onMessage = function (obj) {
-    let reader = new FileReader();
-    reader.readAsArrayBuffer(obj.data);
-    reader.onload = function () {
-        var uint8View = new Uint8Array(reader.result);
-        let length = (uint8View[0] & 0xff) + (uint8View[1] << 8);
-        let msgid = (uint8View[2] & 0xff) + (uint8View[3] << 8);
-        var msg = uint8View.subarray(4);
-        if (length != uint8View.length) {
-            console.log('长度不匹配 包体长度 : ' + uint8View.length + ' 消息长度 : ' + length);
-        } else {
-            let protoName = this.protoIndexById[msgid];
-            if (protoName == null) {
-                console.log('没有消息类型 : ' + msgid);
-                return;
-            }
-            //解析proto数据
-            let proto = Tools.GetValueInObj(ProtoMsg, protoName);
-            if (proto == null) {
-                console.log('没有消息体 : ' + protoName);
-                return;
-            }
-            let message = proto.decode(msg);
-            let obj = proto.toObject(message);
-            console.log('收到 ' + protoName + ' 消息');
-            //调用监听函数
-            let listenerlist = this.listeners[msgid];
-            if (listenerlist != null) {
-                for (let i = 0; i < listenerlist.length; i++) {
-                    let handler = listenerlist[i];
-                    handler.handler.call(handler.caller, msgid, obj);
-                }
-            }
-        }
-    }.bind(this);
+    if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+        this.handleArrayBuffer(obj.data);
+    } else {
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(obj.data);
+        reader.onload = function () {
+            this.handleArrayBuffer(reader.result)
+        }.bind(this);
+    }
 }
 
 NetWorkController.prototype.onClose = function () {
@@ -170,6 +145,39 @@ NetWorkController.prototype.onError = function (err) {
     console.log(new Date() + '[网络消息] socket error ' + err);
     this.connectedCallback = null;
     NotificationController.Emit(Define.EVENT_KEY.NET_CLOSE);
+}
+
+NetWorkController.prototype.handleArrayBuffer = function (buffer) {
+    var uint8View = new Uint8Array(buffer);
+    let length = (uint8View[0] & 0xff) + (uint8View[1] << 8);
+    let msgid = (uint8View[2] & 0xff) + (uint8View[3] << 8);
+    var msg = uint8View.subarray(4);
+    if (length != uint8View.length) {
+        console.log('长度不匹配 包体长度 : ' + uint8View.length + ' 消息长度 : ' + length);
+    } else {
+        let protoName = this.protoIndexById[msgid];
+        if (protoName == null) {
+            console.log('没有消息类型 : ' + msgid);
+            return;
+        }
+        //解析proto数据
+        let proto = Tools.GetValueInObj(ProtoMsg, protoName);
+        if (proto == null) {
+            console.log('没有消息体 : ' + protoName);
+            return;
+        }
+        let message = proto.decode(msg);
+        let obj = proto.toObject(message);
+        console.log('收到 ' + protoName + ' 消息');
+        //调用监听函数
+        let listenerlist = this.listeners[msgid];
+        if (listenerlist != null) {
+            for (let i = 0; i < listenerlist.length; i++) {
+                let handler = listenerlist[i];
+                handler.handler.call(handler.caller, msgid, obj);
+            }
+        }
+    }
 }
 
 module.exports = new NetWorkController();

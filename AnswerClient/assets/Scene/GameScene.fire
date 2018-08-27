@@ -1332,7 +1332,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83,
+      "width": 87,
       "height": 76
     },
     "_rotationX": 0,
@@ -1364,9 +1364,7 @@
     "_fontSize": 76,
     "_lineHeight": 76,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "99",
@@ -1457,9 +1455,7 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "答对三题瓜分奖池所有金币",
@@ -1579,7 +1575,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 101,
+      "width": 107,
       "height": 40
     },
     "_rotationX": 0,
@@ -1611,9 +1607,7 @@
     "_fontSize": 26,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "剩余15人",
@@ -1825,9 +1819,7 @@
     "_fontSize": 30,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "1000",
@@ -2263,9 +2255,7 @@
     "_fontSize": 60,
     "_lineHeight": 60,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "匹配中",
@@ -2593,7 +2583,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 320,
+      "width": 321,
       "height": 60
     },
     "_rotationX": 0,
@@ -2625,9 +2615,7 @@
     "_fontSize": 40,
     "_lineHeight": 60,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "恭喜本场胜利获得",
@@ -2689,7 +2677,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 161,
+      "width": 165,
       "height": 60
     },
     "_rotationX": 0,
@@ -2721,9 +2709,7 @@
     "_fontSize": 50,
     "_lineHeight": 60,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "500000",
@@ -3207,7 +3193,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 201,
+      "width": 200,
       "height": 60
     },
     "_rotationX": 0,
@@ -3239,9 +3225,7 @@
     "_fontSize": 40,
     "_lineHeight": 60,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "请继续加油",
@@ -3303,7 +3287,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 281,
+      "width": 280,
       "height": 60
     },
     "_rotationX": 0,
@@ -3335,9 +3319,7 @@
     "_fontSize": 40,
     "_lineHeight": 60,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "3fe3c8ed-f0c4-4a6e-87c3-5bfec7266527"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "哎 呀～失败了...",

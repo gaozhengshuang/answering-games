@@ -6,6 +6,8 @@ var Define = {
     EVENT_KEY: {
         CHANGE_GAMESTATE: '0',
         LOADED_COMPLETE: '5',
+        ON_SHOWGAME: '6',
+        ON_SHARE: '7',
 
         CONNECT_TO_GATESERVER: '100',
 
@@ -16,13 +18,15 @@ var Define = {
         ROOMINFO_UPDATEANSWER: '204',
         ROOMINFO_GAMEOVER: '205',
         USERINFO_UPDATEYUANBAO: '206',
+        USERINFO_UPDATETASK: '207',
+        USERINFO_UPDATEUSER: '208',
 
         NET_OPEN: '300',
         NET_CLOSE: '301',
 
         TIP_TIPS: '401',
-        TIP_BARRAGE: '402',
-        TIP_RESULT: '403',
+        TIP_NOTIFY: '402',
+        TIP_REWARD: '403',
 
         MUSIC_CHANGE: '500',
         EFFECT_CHANGE: '501'

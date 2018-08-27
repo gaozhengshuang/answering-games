@@ -5,7 +5,7 @@ let NotificationController = require('./NotificationController');
 let Tools = require("../Util/Tools");
 let moment = require("moment/moment");
 let Define = require("../Util/Define");
-let Platform = require('../Util/Platform');
+let PlatformDefine = require('../Util/PlatformDefine');
 
 var LoginController = function () {
     this.sendHeartBeatTime = 0;
@@ -28,7 +28,7 @@ LoginController.prototype.Init = function (cb) {
 }
 
 LoginController.prototype.ConnectToLoginServer = function (cb) {
-    let url = 'ws://' + Platform.LoginHost + ':' + Platform.LoginPort + '/' + Platform.LoginSuffix;
+    let url = PlatformDefine.WSPrefix + PlatformDefine.LoginHost + '/' + PlatformDefine.LoginSuffix;
     this.loginServerUrl = url;
     NetWorkController.Connect(url, cb);
 }
@@ -43,7 +43,8 @@ LoginController.prototype.onL2C_RetLogin = function (msgid, data) {
     //连接gate server
     console.log(data);
     let UserModel = require('../Model/User');
-    let url = 'ws://' + data.gatehost.ip + ':' + data.gatehost.port + '/ws_handler';
+    let url = PlatformDefine.WSPrefix + data.host + '/ws_handler';
+    console.log('onL2c_RetLogin url : ' + url);
     async.waterfall([
         function (anext) {
             //第一步断开websocket
@@ -58,7 +59,8 @@ LoginController.prototype.onL2C_RetLogin = function (msgid, data) {
             NetWorkController.Send('msg.C2GW_ReqLogin', {
                 account: UserModel.GetAccount(),
                 verifykey: data.verifykey,
-                token: UserModel.loginInfo.token
+                token: UserModel.loginInfo.token,
+                face: ''
             }, function (err) {
                 anext(err);
             })

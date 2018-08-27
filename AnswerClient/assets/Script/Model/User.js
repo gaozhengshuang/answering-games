@@ -1,5 +1,5 @@
 let Define = require('../Util/Define');
-let Platform = require('../Util/Platform');
+let PlatformDefine = require('../Util/PlatformDefine');
 let Tools = require('../Util/Tools');
 let NetWorkController = require('../Controller/NetWorkController');
 let NotificationController = require('../Controller/NotificationController');
@@ -31,15 +31,22 @@ UserModel.prototype.GetUserId = function () {
 }
 
 UserModel.prototype.GetFaceUrl = function () {
-    return (Tools.GetValueInObj(this.loginInfo, 'face') || '').slice(0, -4);
+    return Tools.GetValueInObj(this.loginInfo, 'face') || '';
 }
 
 UserModel.prototype.GetAccount = function () {
-    return Tools.GetValueInObj(this.loginInfo, 'account');
+    if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+        return Tools.GetValueInObj(this.loginInfo, 'openid');
+    } else {
+        return Tools.GetValueInObj(this.loginInfo, 'account');
+    }
+}
+UserModel.prototype.GetUserName = function () {
+    return Tools.GetValueInObj(this.loginInfo, 'nickname');
 }
 
 UserModel.prototype.GetTvToken = function (cb) {
-    if (Platform.PLATFORM == 'Normal') {
+    if (PlatformDefine.PLATFORM == 'Normal') {
         Tools.InvokeCallback(cb, '');
     } else {
         if (!Tools.InvokeCallback(window.GetCurrentUser, function (usr) {
@@ -50,7 +57,7 @@ UserModel.prototype.GetTvToken = function (cb) {
     }
 }
 UserModel.prototype.GetUser = function (cb) {
-    if (Platform.PLATFORM == 'Normal') {
+    if (PlatformDefine.PLATFORM == 'Normal') {
         Tools.InvokeCallback(cb, null);
     } else {
         if (!Tools.InvokeCallback(window.GetCurrentUser, function (usr) {
@@ -62,7 +69,7 @@ UserModel.prototype.GetUser = function (cb) {
 }
 
 UserModel.prototype.GetPlayerGoods = function (cb) {
-    HttpUtil.HTTPGet(Platform.GOODSPATH, { uid: this.GetUserId(), state: 0 }, function (retJson) {
+    HttpUtil.HTTPGet(PlatformDefine.GOODSPATH, { uid: this.GetUserId(), state: 0 }, function (retJson) {
         if (retJson.code == 0 || retJson.msg == "操作成功") {
             Tools.InvokeCallback(cb, retJson.data);
         } else {
@@ -71,11 +78,11 @@ UserModel.prototype.GetPlayerGoods = function (cb) {
     });
 }
 UserModel.prototype.GetCostCurrency = function () {
-    if (Platform.PLATFORM == 'Normal') {
-        return Tools.GetValueInObj(this.userInfo, 'base.yuanbao') || 0;
-    } else {
-        return this.platformCoins || 0;
-    }
+    // if (PlatformDefine.PLATFORM == 'Normal') {
+    return Tools.GetValueInObj(this.userInfo, 'base.yuanbao') || 0;
+    // } else {
+    //     return this.platformCoins || 0;
+    // }
     // return 1000000;
 }
 UserModel.prototype.GetMoney = function () {
@@ -86,8 +93,7 @@ UserModel.prototype.GetMoney = function () {
  */
 UserModel.prototype.onGW2C_RetLogin = function (msgid, data) {
     if (data.errcode != null) {
-        NotificationController.Emit(Define.EVENT_KEY.TIP_TIPS, { text: data.errcode });
-        //返回登录界面
+        NotificationController.Emit(Define.EVENT_KEY.TIP_TIPS, { text: '<color=#ffffff>' + data.errcode + '</color>' });
     }
 }
 
@@ -95,6 +101,8 @@ UserModel.prototype.onGW2C_SendUserInfo = function (msgid, data) {
     this.userInfo = data;
     NotificationController.Emit(Define.EVENT_KEY.CONNECT_TO_GATESERVER);
     NotificationController.Emit(Define.EVENT_KEY.USERINFO_UPDATEMONEY, Tools.GetValueInObj(this.userInfo, 'base.money') || 0);
+    let Game = require('../Game');
+    Game.Platform.SendUserInfo();
 }
 
 UserModel.prototype.onGW2C_SendUserPlatformMoney = function (msgid, data) {

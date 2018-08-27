@@ -4,13 +4,17 @@ cc.Class({
 
     properties: {
         goldLabel: { default: null, type: cc.Label },
-        playButtonSprite: { default: null, type: cc.Sprite },
-        buttonSpriteFrames: { default: [], type: [cc.SpriteFrame] },
-        rewardTipNodes: { default: [], type: [cc.Node] },
         playButton: { default: null, type: cc.Button },
         targetCanvas: { default: null, type: cc.Canvas },
-        startButtonAnimation: { default: null, type: cc.Animation },
-        bets: { default: 1 },
+        taskInfoViewPrefab: { default: null, type: cc.Prefab },
+        playerInfoViewPrefab: { default: null, type: cc.Prefab },
+        rankInfoViewPrefab: { default: null, type: cc.Prefab },
+        rechargePrefab: { default: null, type: cc.Prefab },
+        faceSprite: { default: null, type: cc.Sprite },
+        nameLabel: { default: null, type: cc.Label },
+        shareButton: { default: null, type: cc.Button },
+        shareColdDownLabel: { default: null, type: cc.Label },
+
         timeout: { default: null }
     },
 
@@ -21,6 +25,8 @@ cc.Class({
         Game.NetWorkController.AddListener('msg.GW2C_JoinOk', this, this.onGW2C_JoinOk);
         Game.NotificationController.On(Game.Define.EVENT_KEY.USERINFO_UPDATEYUANBAO, this, this.onUpdateCostCurrency);
         Game.NotificationController.On(Game.Define.EVENT_KEY.USERINFO_UPDATECOINS, this, this.onUpdateCostCurrency);
+        Game.NotificationController.On(Game.Define.EVENT_KEY.USERINFO_UPDATEUSER, this, this.onUpdateUserInfo);
+        this.onUpdateUserInfo();
     },
 
     start() {
@@ -31,53 +37,30 @@ cc.Class({
     },
 
     update(dt) {
-
+        this._updateShareButton();
     },
 
     onDestroy() {
         Game.NetWorkController.RemoveListener('msg.GW2C_JoinOk', this, this.onGW2C_JoinOk);
         Game.NotificationController.Off(Game.Define.EVENT_KEY.USERINFO_UPDATEYUANBAO, this, this.onUpdateCostCurrency);
         Game.NotificationController.Off(Game.Define.EVENT_KEY.USERINFO_UPDATECOINS, this, this.onUpdateCostCurrency);
+        Game.NotificationController.Off(Game.Define.EVENT_KEY.USERINFO_UPDATEUSER, this, this.onUpdateUserInfo);
         if (this.timeout != null) {
             clearTimeout(this.timeout);
         }
     },
     onUpdateCostCurrency() {
         this.goldLabel.string = Game.UserModel.GetCostCurrency();
-        if (Game.UserModel.GetCostCurrency() >= 1000) {
-            this.startButtonAnimation.play('PlayButtonRed');
-            this.bets = 1;
-        } else {
-            this.startButtonAnimation.play('PlayButtonYellow');
-            this.bets = 0;
-        }
-        this._updatePlayButton();
     },
     onStartGame(event) {
         Game.RoomModel.RestartGame();
         Game.GameController.RestartGame();
-        switch (this.bets) {
-            case 0: {
-                Game.GameController.bets = 100;
-                break;
-            }
-            case 1: {
-                Game.GameController.bets = 1000;
-                break;
-            }
-            case 2: {
-                Game.GameController.bets = 3000;
-                break;
-            }
-            default:
-                break;
-        }
-        if (Game.UserModel.GetCostCurrency() < Game.GameController.bets) {
+        if (Game.UserModel.GetCostCurrency() < 1000) {
             //货币不足咯
-            Game.NotificationController.Emit(Game.Define.EVENT_KEY.TIP_TIPS, { text: '您的货币不足，请先去充值' });
+            Game.NotificationController.Emit(Game.Define.EVENT_KEY.TIP_TIPS, { text: '<color=#ffffff>您的货币不足，请先去充值</color>' });
         } else {
             Game.UserModel.GetTvToken(function (token) {
-                Game.NetWorkController.Send('msg.C2GW_JoinGame', { type: this.bets, token: token });
+                Game.NetWorkController.Send('msg.C2GW_JoinGame', { type: 1, token: token });
             }.bind(this))
             this.playButton.interactable = false;
             this.timeout = setTimeout(function () {
@@ -87,16 +70,68 @@ cc.Class({
         }
     },
     onRecharge(event) {
-        Game.Tools.InvokeCallback(window.OpenSystemRecharge);
+        // if (cc.sys.os == cc.sys.OS_IOS) {
+        //     Game.NotificationController.Emit(Game.Define.EVENT_KEY.TIP_NOTIFY, 'iOS暂未开放充值');
+        // } else if (cc.sys.os == cc.sys.OS_ANDROID) {
+        //     //调起支付
+        //     // Game.Platform.RequestPay();
+        //     // Game.NetWorkController.Send('msg.C2GW_PlatformRechargeDone', {});
+        //     let node = cc.instantiate(this.rechargePrefab);
+        //     this.node.addChild(node);
+        // } else {
+        Game.NotificationController.Emit(Game.Define.EVENT_KEY.TIP_NOTIFY, '暂未开放充值');
+        // }
+    },
+    onOpenTaskInfoView() {
+        let node = cc.instantiate(this.taskInfoViewPrefab);
+        this.node.addChild(node);
+        let taskInfoView = node.getComponent('TaskInfoView');
+        taskInfoView.Init(this.onStartGame.bind(this));
+    },
+    onOpenRankInfoView() {
+        let node = cc.instantiate(this.rankInfoViewPrefab);
+        this.node.addChild(node);
+    },
+    onOpenPlayerInfoView() {
+        let node = cc.instantiate(this.playerInfoViewPrefab);
+        this.node.addChild(node);
+    },
+    onOpenDrawInfoView() {
+        Game.NotificationController.Emit(Game.Define.EVENT_KEY.TIP_TIPS, { text: '<color=#ffffff>暂未开放</color>' });
+    },
+    onShare() {
+        Game.Platform.ShareMessage();
     },
     onGW2C_JoinOk() {
         //收到自己的消息了 进入游戏吧
         cc.director.loadScene("GameScene");
     },
-    _updatePlayButton() {
-        this.playButtonSprite.spriteFrame = this.buttonSpriteFrames[this.bets];
-        for (let i = 0; i < this.rewardTipNodes.length; i++) {
-            this.rewardTipNodes[i].active = (i == this.bets);
+    onUpdateUserInfo() {
+        let faceurl = Game.UserModel.GetFaceUrl();
+        console.log('StartScene onUpdateUserInfo');
+        console.log(faceurl);
+        let urlReg = new RegExp(Game.Define.Regex.url);
+        if (urlReg.exec(faceurl)) {
+            cc.loader.load({ url: faceurl, type: 'png' }, function (err, tex) {
+                if (err) {
+                    console.log('[严重错误] 加载资源失败 ' + err);
+                } else {
+                    this.faceSprite.spriteFrame = new cc.SpriteFrame(tex);
+                }
+            }.bind(this));
+        };
+        this.nameLabel.string = Game.UserModel.GetUserName();
+    },
+
+    _updateShareButton() {
+        let lastTime = Math.max(0, Game.TaskModel.nextShareTime - Game.TimeController.GetCurTime());
+        if (lastTime > 0) {
+            //倒计时
+            this.shareButton.interactable = false;
+            this.shareColdDownLabel.string = Game.moment.unix(lastTime).format('mm:ss');
+        } else {
+            this.shareButton.interactable = true;
+            this.shareColdDownLabel.string = '';
         }
     }
 });

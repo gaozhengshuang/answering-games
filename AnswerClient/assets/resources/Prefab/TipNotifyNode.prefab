@@ -25,11 +25,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 9
+        "__id__": 8
       }
     ],
     "_prefab": {
-      "__id__": 10
+      "__id__": 9
     },
     "_id": "",
     "_opacity": 255,
@@ -58,7 +58,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 0
+      "y": 190
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -112,7 +112,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 190
+      "y": 0
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -160,7 +160,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "infoLabel",
+    "_name": "New RichText",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -171,21 +171,18 @@
     "_components": [
       {
         "__id__": 6
-      },
-      {
-        "__id__": 7
       }
     ],
     "_prefab": {
-      "__id__": 8
+      "__id__": 7
     },
     "_id": "",
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 251,
-      "b": 251,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_cascadeOpacityEnabled": true,
@@ -196,8 +193,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 600,
-      "height": 40
+      "width": 55,
+      "height": 50
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -206,7 +203,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 190
+      "y": 0
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -216,43 +213,23 @@
     "groupIndex": 0
   },
   {
-    "__type__": "cc.Label",
+    "__type__": "cc.RichText",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 5
     },
     "_enabled": true,
-    "_useOriginalSize": false,
-    "_actualFontSize": 29,
-    "_fontSize": 30,
-    "_lineHeight": 40,
-    "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
-    "_spacingX": 0,
-    "_N$string": "dadfadfadfasdfasdfasdfasdfasdfasd",
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Microsoft YaHei",
-    "_N$overflow": 2
-  },
-  {
-    "__type__": "cc.LabelOutline",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 5
+    "_N$string": "<color=#ffffff>Text</color>",
+    "_N$horizontalAlign": 0,
+    "_N$fontSize": 30,
+    "_N$font": null,
+    "_N$maxWidth": 0,
+    "_N$lineHeight": 50,
+    "_N$imageAtlas": {
+      "__uuid__": "c19d4470-3fa0-4e0a-9152-19a2e1dd90e2"
     },
-    "_enabled": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_width": 1
+    "_N$handleTouchEvent": true
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -262,7 +239,7 @@
     "asset": {
       "__uuid__": "15bf0e6a-304c-4836-9d97-b4e2049a71f5"
     },
-    "fileId": "9dEORrqxxO37kIWZfeck7P",
+    "fileId": "07WMWj+3lGLaDYoEfKdTff",
     "sync": false
   },
   {

@@ -1,7 +1,8 @@
 'use strict';
 var fs = require('fs');
-var node_xj = require('xls-to-json');
+var path = require('path');
 var process = require('child_process');
+var async = require('async');
 
 module.exports = {
     load() {
@@ -17,24 +18,30 @@ module.exports = {
         'genJson'() {
             // open entry panel registered in package.json
             Editor.log('开始生成JSON');
-            let sourcePath = __dirname + '\\..\\..\\..\\docs\\tbl\\proto_index.json';
-            let targetFile = __dirname + '\\..\\..\\assets\\resources\\Json\\';
-            let cmd = 'copy ' + sourcePath + ' ' + targetFile;
-            process.exec(cmd, function (err, stdout, stderr) {
-                if (err) {
-                    Editor.log('++++++ Json 错误 ++++++' + stderr);
-                } else {
-                    sourcePath = __dirname + '\\..\\..\\..\\docs\\json\\*.json';
-                    let cmd = 'copy ' + sourcePath + ' ' + targetFile;
-                    process.exec(cmd, function (err, stdout, stderr) {
-                        if (err) {
-                            Editor.log('++++++ Json 错误 ++++++' + stderr);
-                        } else {
-                            Editor.log('生成成功');
-                        }
+            async.waterfall([
+                function (anext) {
+                    let sourcePath1 = path.join(__dirname, '/../../../docs/tbl/proto_index.json');
+                    let targetFile = path.join(__dirname, '/../../assets/resources/Json/');
+                    let cmd = 'copy ' + sourcePath1 + ' ' + targetFile;
+                    process.exec(cmd, function (err) {
+                        anext(err)
+                    });
+                },
+                function (anext) {
+                    let sourcePath1 = path.join(__dirname, '/../../../docs/tbl/taskbase.json');
+                    let targetFile = path.join(__dirname, '/../../assets/resources/Json/');
+                    let cmd = 'copy ' + sourcePath1 + ' ' + targetFile;
+                    process.exec(cmd, function (err) {
+                        anext(err)
                     });
                 }
-            });
+            ], function (err) {
+                if (err) {
+                    Editor.log('++++++ Json 错误 ++++++' + err);
+                } else {
+                    Editor.log('生成成功');
+                }
+            })
         },
         'genProto'() {
             Editor.log('开始生成ProtoMsg');

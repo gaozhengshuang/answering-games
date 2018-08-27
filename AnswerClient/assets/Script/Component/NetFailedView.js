@@ -16,19 +16,20 @@ cc.Class({
         Game.NotificationController.Off(Game.Define.EVENT_KEY.CONNECT_TO_GATESERVER, this, this.onClosePanel);
     },
     onClickResetNet() {
-        if (Game.Platform.PLATFORM == 'Normal') {
-            Game.LoginController.ConnectToLoginServer(function () {
-                Game.NetWorkController.Send('msg.C2L_ReqLogin', Game.UserModel.loginInfo);
-            }.bind(this));
-        } else {
-            Game.UserModel.GetUser(function (usr) {
-                let loginInfo = { token: usr.token, account: usr.tvmid, face: usr.avatar, nickname: usr.nickname  }
-                Game.UserModel.loginInfo = loginInfo;
-                Game.LoginController.ConnectToLoginServer(function () {
-                    Game.NetWorkController.Send('msg.C2L_ReqLogin', loginInfo);
-                }.bind(this));
-            });
-        }
+        Game.Platform.AutoLogin();
+        // if (Game.PlatformDefine.PLATFORM == 'Normal') {
+        //     Game.LoginController.ConnectToLoginServer(function () {
+        //         Game.NetWorkController.Send('msg.C2L_ReqLogin', Game.UserModel.loginInfo);
+        //     }.bind(this));
+        // } else {
+        //     Game.UserModel.GetUser(function (usr) {
+        //         let loginInfo = { token: usr.token, account: usr.tvmid, face: usr.avatar, nickname: usr.nickname  }
+        //         Game.UserModel.loginInfo = loginInfo;
+        //         Game.LoginController.ConnectToLoginServer(function () {
+        //             Game.NetWorkController.Send('msg.C2L_ReqLogin', loginInfo);
+        //         }.bind(this));
+        //     });
+        // }
     },
     onClosePanel() {
         this.node.destroy();
